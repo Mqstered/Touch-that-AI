@@ -1,10 +1,10 @@
-import AppTabs from '@/components/app-tabs';
-import { LearningProvider } from '@/context/learning-context';
+import { LearningProvider } from "@/context/learning-context";
+import { Stack } from "expo-router";
 
 export default function Layout() {
   return (
     <LearningProvider>
-      <AppTabs />
+      <Stack screenOptions={{ headerShown: false }} />
     </LearningProvider>
   );
 }

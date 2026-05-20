@@ -1,5 +1,5 @@
 import StartScreen from "../StartScreen";
 
-export default function Index() {
+export default function Home() {
   return <StartScreen />;
 }
