@@ -1,15 +1,6 @@
-export type LearningModule = {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  focus: string;
-  mastery: number;
-  lessons: number;
-  progress: number;
-  updatedAt: string;
-  category: string;
-};
+import type { LearningModule } from '@/types/learning';
+
+export type { LearningModule } from '@/types/learning';
 
 export const learningModules: LearningModule[] = [
   {

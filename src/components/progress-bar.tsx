@@ -10,7 +10,10 @@ type ProgressBarProps = {
 
 export function ProgressBar({ value, style }: ProgressBarProps) {
   const theme = useTheme();
-  const progressWidth = `${Math.min(100, Math.max(0, value))}%`;
+  // const progressWidth = `${Math.min(100, Math.max(0, value))}%`;
+  const progressWidth: `${number}%` =
+    `${Math.min(100, Math.max(0, value))}%`;
+
 
   return (
     <View style={[styles.track, { backgroundColor: theme.backgroundElement }, style]}>
