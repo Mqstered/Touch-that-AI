@@ -1,5 +1,5 @@
-import type { AuthState } from '@/types';
+import { useAuthContext } from '@/context/auth-context';
 
-export function useAuth(): AuthState {
-  return { status: 'unauthenticated' };
+export function useAuth() {
+  return useAuthContext();
 }

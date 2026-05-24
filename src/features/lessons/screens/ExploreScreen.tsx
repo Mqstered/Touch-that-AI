@@ -7,13 +7,19 @@ import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
+import { RecommendationList } from '@/features/recommendations/components/RecommendationList';
+import { useRecommendations } from '@/features/recommendations/hooks/useRecommendations';
 import { useLearning } from '@/hooks/use-learning';
 
 export default function ExploreScreen() {
   const router = useRouter();
-  const { modules, practiceModule } = useLearning();
+  const { modules, practiceModule, averageMastery, totalLessons } = useLearning();
+  const recommendations = useRecommendations();
 
   return (
+    <AuthGuard>
     <ScreenShell>
       <View style={styles.backgroundGlowLarge} />
       <View style={styles.backgroundGlowSmall} />
@@ -36,6 +42,11 @@ export default function ExploreScreen() {
         </ThemedText>
       </ThemedView>
 
+      <MasteryOverview
+        averageMastery={averageMastery}
+        totalLessons={totalLessons}
+      />
+
       <View style={styles.moduleList}>
         {modules.map((module) => (
           <ModuleCard
@@ -47,10 +58,16 @@ export default function ExploreScreen() {
         ))}
       </View>
 
+      <RecommendationList
+        modules={recommendations}
+        onModulePress={(id) => router.push(`/module/${id}`)}
+      />
+
       <View style={styles.playgroundWrapper}>
         <PromptPlayground />
       </View>
     </ScreenShell>
+    </AuthGuard>
   );
 }
 

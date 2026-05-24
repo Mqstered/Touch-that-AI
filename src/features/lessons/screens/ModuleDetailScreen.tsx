@@ -7,6 +7,7 @@ import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
+import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { useLearning } from '@/hooks/use-learning';
 
 export default function ModuleDetailScreen() {
@@ -26,6 +27,7 @@ export default function ModuleDetailScreen() {
   }
 
   return (
+    <AuthGuard>
     <ScreenShell>
       <View style={styles.hero}>
         <ThemedText type="title" style={styles.title}>
@@ -66,6 +68,7 @@ export default function ModuleDetailScreen() {
         <ThemedText type="link">Back to explore</ThemedText>
       </Pressable>
     </ScreenShell>
+    </AuthGuard>
   );
 }
 

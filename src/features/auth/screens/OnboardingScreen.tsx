@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Animated,
   Pressable,
   StatusBar,
@@ -9,10 +10,21 @@ import {
   View,
 } from 'react-native';
 
+import { useAuth } from '@/features/auth/hooks/useAuth';
+
 const TYPING_TEXT = 'Learn how to command the future.';
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { state } = useAuth();
+
+  const handleCTA = () => {
+    if (state.status === 'authenticated') {
+      router.replace('/explore');
+    } else {
+      router.push('/(auth)/sign-in');
+    }
+  };
 
   //------------------------------------------------
   // ANIMATIONS
@@ -142,7 +154,7 @@ export default function OnboardingScreen() {
       </View>
 
       <Pressable
-        onPress={() => router.push('/explore')}
+        onPress={handleCTA}
         onHoverIn={startHoverAnimation}
         onHoverOut={stopHoverAnimation}
         onPressIn={startHoverAnimation}
@@ -156,9 +168,13 @@ export default function OnboardingScreen() {
             { transform: [{ scale: scaleAnim }, { translateX: shakeAnim }] },
           ]}
         >
-          <Text style={[styles.buttonText, hovered && styles.buttonTextHovered]}>
-            Ready to Touch
-          </Text>
+          {state.status === 'loading' ? (
+            <ActivityIndicator color="#fdf4ff" />
+          ) : (
+            <Text style={[styles.buttonText, hovered && styles.buttonTextHovered]}>
+              {state.status === 'authenticated' ? 'Continue' : 'Ready to Touch'}
+            </Text>
+          )}
         </Animated.View>
       </Pressable>
     </View>
