@@ -8,7 +8,7 @@ import type { DbRecommendation } from '@/services/recommendations.service';
 
 type RecommendationListProps = {
   recommendations: DbRecommendation[];
-  onModulePress: (moduleSlug: string) => void;
+  onModulePress: (moduleSlug: string, lessonId?: string) => void;
 };
 
 export function RecommendationList({ recommendations, onModulePress }: RecommendationListProps) {
@@ -22,7 +22,9 @@ export function RecommendationList({ recommendations, onModulePress }: Recommend
       {recommendations.map((rec, i) => (
         <Pressable
           key={rec.lessonId || `rec-${i}`}
-          onPress={() => onModulePress(rec.moduleSlug)}
+          onPress={() =>
+            onModulePress(rec.moduleSlug, rec.lessonId || undefined)
+          }
         >
           <ThemedView type="backgroundElement" style={styles.card}>
             <ThemedText type="smallBold">{rec.lessonTitle}</ThemedText>

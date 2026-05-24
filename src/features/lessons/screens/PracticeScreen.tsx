@@ -17,6 +17,7 @@ import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { generateFeedback, scorePrompt } from '@/lib/scoring';
+import { fetchEnhancedFeedback } from '@/services/ai.service';
 import { fetchLessonById } from '@/services/lessons.service';
 import { savePracticeAttempt } from '@/services/practice.service';
 import { useTheme } from '@/hooks/use-theme';
@@ -94,11 +95,19 @@ export default function PracticeScreen() {
     const feedback = generateFeedback(scoreBreakdown);
     const timeSpentSeconds = Math.round((Date.now() - startMs.current) / 1000);
 
+    const aiTip = await fetchEnhancedFeedback(
+      response.trim(),
+      lesson.practiceTask,
+      scoreBreakdown,
+      feedback,
+    );
+    const combinedFeedback = aiTip ? [...feedback, aiTip] : feedback;
+
     const attempt: ScoredAttempt = {
       lessonId: lesson.id,
       userResponse: response.trim(),
       score: scoreBreakdown,
-      feedback,
+      feedback: combinedFeedback,
       timeSpentSeconds,
     };
 
@@ -119,7 +128,7 @@ export default function PracticeScreen() {
         constraints: String(scoreBreakdown.constraints),
         outputFormat: String(scoreBreakdown.outputFormat),
         safety: String(scoreBreakdown.safety),
-        feedback: JSON.stringify(feedback),
+        feedback: JSON.stringify(combinedFeedback),
       },
     });
   };

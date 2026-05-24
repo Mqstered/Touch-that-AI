@@ -29,7 +29,9 @@ export async function fetchRecommendations(
     .order('priority', { ascending: true })
     .limit(5);
 
-  if (recError || !recRows || recRows.length === 0) return ok(localFallback());
+  if (recError || !recRows || recRows.length === 0) {
+    return ok(await progressFallback(userId));
+  }
 
   const lessonIds = recRows.map((r) => r.lesson_id);
   const { data: lessonRows, error: lessonError } = await supabase
@@ -37,7 +39,7 @@ export async function fetchRecommendations(
     .select('id, module_slug, title')
     .in('id', lessonIds);
 
-  if (lessonError) return ok(localFallback());
+  if (lessonError) return ok(await progressFallback(userId));
 
   const lessonMap = new Map(
     (lessonRows ?? []).map((l) => [l.id, { moduleSlug: l.module_slug, title: l.title }]),
@@ -57,11 +59,41 @@ export async function fetchRecommendations(
   return ok(recs);
 }
 
-/**
- * Local fallback: convert lowest-mastery modules into DbRecommendation shape
- * so the UI contract is satisfied even before the DB has recommendation rows.
- */
-function localFallback(): DbRecommendation[] {
+/** Prefer Supabase user_progress; fall back to static module mastery. */
+async function progressFallback(userId: string): Promise<DbRecommendation[]> {
+  if (userId !== 'anonymous') {
+    const { data: progressRows } = await supabase
+      .from('user_progress')
+      .select('module_slug, mastery')
+      .eq('user_id', userId)
+      .order('mastery', { ascending: true })
+      .limit(3);
+
+    if (progressRows && progressRows.length > 0) {
+      const slugs = progressRows.map((r) => r.module_slug);
+      const { data: lessonRows } = await supabase
+        .from('lessons')
+        .select('id, module_slug, title')
+        .in('module_slug', slugs)
+        .eq('sort_order', 0);
+
+      const firstByModule = new Map(
+        (lessonRows ?? []).map((l) => [l.module_slug, l]),
+      );
+
+      return progressRows.map((p, i) => {
+        const lesson = firstByModule.get(p.module_slug);
+        return {
+          lessonId: lesson?.id ?? '',
+          moduleSlug: p.module_slug,
+          lessonTitle: lesson?.title ?? p.module_slug,
+          reason: `Mastery ${p.mastery}% — keep practising this module.`,
+          priority: i,
+        };
+      });
+    }
+  }
+
   return [...learningModules]
     .sort((a, b) => a.mastery - b.mastery)
     .slice(0, 3)

@@ -13,7 +13,10 @@ import { fetchLessonsForModule } from '@/services/lessons.service';
 import type { DbLesson } from '@/types';
 
 export default function LessonScreen() {
-  const { moduleSlug } = useLocalSearchParams<{ moduleSlug: string }>();
+  const { moduleSlug, lessonId } = useLocalSearchParams<{
+    moduleSlug: string;
+    lessonId?: string;
+  }>();
   const router = useRouter();
   const theme = useTheme();
 
@@ -32,8 +35,12 @@ export default function LessonScreen() {
         return;
       }
       setLessons(result.data);
+      if (lessonId) {
+        const idx = result.data.findIndex((l) => l.id === lessonId);
+        if (idx >= 0) setCurrentIndex(idx);
+      }
     });
-  }, [moduleSlug]);
+  }, [moduleSlug, lessonId]);
 
   if (!moduleSlug) return null;
 

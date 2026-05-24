@@ -1,0 +1,86 @@
+[
+  {
+    "profile_key": "study:beginner:prompting",
+    "goal": "study",
+    "level": "beginner",
+    "skill": "prompting",
+    "query_text": "I want to learn how to write better AI prompts for studying, exams, and revision. Beginner level prompting skills."
+  },
+  {
+    "profile_key": "study:beginner:context",
+    "goal": "study",
+    "level": "beginner",
+    "skill": "context",
+    "query_text": "Adding context to study prompts. Background information for exam preparation and note-taking with AI."
+  },
+  {
+    "profile_key": "study:beginner:any",
+    "goal": "study",
+    "level": "beginner",
+    "skill": "prompting",
+    "query_text": "Beginner AI study help: study plans, summaries, quizzes, and learning prompts."
+  },
+  {
+    "profile_key": "daily_life:beginner:prompting",
+    "goal": "daily_life",
+    "level": "beginner",
+    "skill": "prompting",
+    "query_text": "Using AI in daily life: planning, lists, emails, and everyday tasks with clear prompts."
+  },
+  {
+    "profile_key": "daily_life:beginner:any",
+    "goal": "daily_life",
+    "level": "beginner",
+    "skill": "prompting",
+    "query_text": "Practical AI for daily routines, planning my day, and simple life organization."
+  },
+  {
+    "profile_key": "work:beginner:prompting",
+    "goal": "work",
+    "level": "beginner",
+    "skill": "prompting",
+    "query_text": "Professional AI prompts for work: emails, reports, and workplace communication."
+  },
+  {
+    "profile_key": "work:intermediate:prompting",
+    "goal": "work",
+    "level": "intermediate",
+    "skill": "prompting",
+    "query_text": "Intermediate work prompts: presentations, professional tone, and structured business outputs."
+  },
+  {
+    "profile_key": "safety:beginner:safety",
+    "goal": "safety",
+    "level": "beginner",
+    "skill": "safety",
+    "query_text": "AI safety basics: privacy, bias, fact-checking, and responsible AI use for beginners."
+  },
+  {
+    "profile_key": "agents:intermediate:reasoning",
+    "goal": "agents",
+    "level": "intermediate",
+    "skill": "reasoning",
+    "query_text": "Introduction to AI agents: multi-step tasks, goals, boundaries, and reviewing agent output."
+  },
+  {
+    "profile_key": "study:intermediate:reasoning",
+    "goal": "study",
+    "level": "intermediate",
+    "skill": "reasoning",
+    "query_text": "Chain-of-thought and step-by-step reasoning for study and problem-solving with AI."
+  },
+  {
+    "profile_key": "study:beginner:evaluation",
+    "goal": "study",
+    "level": "beginner",
+    "skill": "evaluation",
+    "query_text": "How adaptive learning and knowledge tracing help personalize study with AI apps."
+  },
+  {
+    "profile_key": "safety:intermediate:safety",
+    "goal": "safety",
+    "level": "intermediate",
+    "skill": "safety",
+    "query_text": "Guardrails, refusals, and ethical boundaries when using AI at work or school."
+  }
+]

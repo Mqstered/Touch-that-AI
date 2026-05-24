@@ -1,4 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ModuleCard } from '@/components/module-card';
@@ -10,6 +12,7 @@ import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
 import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
+import { LessonFinder } from '@/features/lessons/components/LessonFinder';
 import { RecommendationList } from '@/features/recommendations/components/RecommendationList';
 import { useRecommendations } from '@/features/recommendations/hooks/useRecommendations';
 import { useLearning } from '@/hooks/use-learning';
@@ -18,7 +21,13 @@ export default function ExploreScreen() {
   const router = useRouter();
   const { modules, practiceModule, totalLessons } = useLearning();
   const { averageMastery } = useUserProgress();
-  const { recommendations } = useRecommendations();
+  const { recommendations, refresh } = useRecommendations();
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh]),
+  );
 
   return (
     <AuthGuard>
@@ -49,12 +58,19 @@ export default function ExploreScreen() {
         totalLessons={totalLessons}
       />
 
+      <LessonFinder />
+
       <View style={styles.moduleList}>
         {modules.map((module) => (
           <ModuleCard
             key={module.id}
             module={module}
-            onPress={() => router.push(`/lesson/${module.id}`)}
+            onPress={() =>
+              router.push({
+                pathname: '/lesson/[moduleSlug]',
+                params: { moduleSlug: module.id },
+              })
+            }
             onPractice={() => practiceModule(module.id)}
           />
         ))}
@@ -62,7 +78,14 @@ export default function ExploreScreen() {
 
       <RecommendationList
         recommendations={recommendations}
-        onModulePress={(id) => router.push(`/lesson/${id}`)}
+        onModulePress={(slug, lessonId) => {
+          router.push({
+            pathname: '/lesson/[moduleSlug]',
+            params: lessonId
+              ? { moduleSlug: slug, lessonId }
+              : { moduleSlug: slug },
+          });
+        }}
       />
 
       <View style={styles.playgroundWrapper}>

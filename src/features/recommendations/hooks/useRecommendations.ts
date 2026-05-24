@@ -9,6 +9,7 @@ import {
 type UseRecommendationsResult = {
   recommendations: DbRecommendation[];
   loading: boolean;
+  refresh: () => void;
 };
 
 /**
@@ -22,15 +23,20 @@ export function useRecommendations(): UseRecommendationsResult {
   const { state } = useAuth();
   const [recommendations, setRecommendations] = useState<DbRecommendation[]>([]);
   const [loading, setLoading] = useState(false);
+  const [tick, setTick] = useState(0);
+
+  const userId =
+    state.status === 'authenticated' ? state.session.user.id : 'anonymous';
 
   useEffect(() => {
-    const userId = state.status === 'authenticated' ? state.session.user.id : 'anonymous';
     setLoading(true);
     fetchRecommendations(userId).then((result) => {
       setLoading(false);
       if (result.ok) setRecommendations(result.data);
     });
-  }, [state.status === 'authenticated' && state.session?.user.id]);
+  }, [userId, tick]);
 
-  return { recommendations, loading };
+  const refresh = () => setTick((t) => t + 1);
+
+  return { recommendations, loading, refresh };
 }
