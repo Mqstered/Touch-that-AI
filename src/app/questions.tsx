@@ -1,8 +1,10 @@
 import { useState } from "react";
 import {
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const questions = [
@@ -41,8 +43,7 @@ const questions = [
       "Tell me everything about quantum computing.",
     ],
     correctAnswer: 2,
-    explanation:
-      "Asking for sources improves reliability and verification.",
+    explanation: "Asking for sources improves reliability and verification.",
   },
 
   {
@@ -54,8 +55,7 @@ const questions = [
       "Make social media content.",
     ],
     correctAnswer: 2,
-    explanation:
-      "Audience, tone, and context help guide AI creativity.",
+    explanation: "Audience, tone, and context help guide AI creativity.",
   },
 
   {
@@ -78,12 +78,20 @@ export default function QuestionScreen() {
 
   const question = questions[currentQuestion];
 
+  //------------------------------------------------
+  // NEXT QUESTION
+  //------------------------------------------------
+
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
     }
   };
+
+  //------------------------------------------------
+  // PREVIOUS QUESTION
+  //------------------------------------------------
 
   const previousQuestion = () => {
     if (currentQuestion > 0) {
@@ -93,168 +101,327 @@ export default function QuestionScreen() {
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: "#000",
-        padding: 24,
-      }}
-    >
-      <Text
-        style={{
-          color: "#888",
-          fontSize: 16,
-          marginBottom: 10,
-        }}
+    <View style={styles.container}>
+      {/* BACKGROUND GLOWS */}
+
+      <View style={styles.glowTop} />
+      <View style={styles.glowBottom} />
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
       >
-        Question {currentQuestion + 1} of {questions.length}
-      </Text>
+        {/* QUESTION COUNTER */}
 
-      <View
-  style={{
-    height: 12,
-    backgroundColor: "#222",
-    borderRadius: 10,
-    overflow: "hidden",
-    marginBottom: 30,
-  }}
->
-  <View
-    style={{
-      height: "100%",
-      width: `${((currentQuestion + 1) / questions.length) * 100}%`,
-      backgroundColor: "#7c3aed",
-      borderRadius: 10,
-    }}
-  />
-</View>
+        <Text style={styles.questionCounter}>
+          Question {currentQuestion + 1} of {questions.length}
+        </Text>
 
-      <Text
-        style={{
-          color: "white",
-          fontSize: 30,
-          fontWeight: "bold",
-          marginBottom: 20,
-        }}
-      >
-        Prompt Basics
-      </Text>
+        {/* PROGRESS BAR */}
 
-      <Text
-        style={{
-          color: "#aaa",
-          fontSize: 18,
-          marginBottom: 30,
-        }}
-      >
-        {question.question}
-      </Text>
-
-      {question.options.map((option, index) => {
-        const isCorrect = index === question.correctAnswer;
-        const isSelected = index === selectedAnswer;
-
-        let backgroundColor = "#1e1e1e";
-
-        if (selectedAnswer !== null) {
-          if (isCorrect) {
-            backgroundColor = "#14532d";
-          } else if (isSelected) {
-            backgroundColor = "#7f1d1d";
-          }
-        }
-
-        return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => setSelectedAnswer(index)}
-            style={{
-              backgroundColor,
-              padding: 18,
-              borderRadius: 18,
-              marginBottom: 14,
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontSize: 16,
-              }}
-            >
-              {option}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-
-      {selectedAnswer !== null && (
-        <View
-          style={{
-            marginTop: 20,
-            backgroundColor: "#111",
-            padding: 20,
-            borderRadius: 20,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              marginBottom: 10,
-            }}
-          >
-            {selectedAnswer === question.correctAnswer
-              ? "Correct!"
-              : "Not quite!"}
-          </Text>
-
-          <Text
-            style={{
-              color: "#bbb",
-              fontSize: 16,
-            }}
-          >
-            {question.explanation}
-          </Text>
+        <View style={styles.progressBackground}>
+          <View
+            style={[
+              styles.progressFill,
+              {
+                width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+              },
+            ]}
+          />
         </View>
-      )}
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          marginTop: 30,
-        }}
-      >
-        <TouchableOpacity
-          onPress={previousQuestion}
-          style={{
-            backgroundColor: "#222",
-            paddingVertical: 14,
-            paddingHorizontal: 24,
-            borderRadius: 14,
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16 }}>
-            Previous
-          </Text>
-        </TouchableOpacity>
+        {/* TITLE */}
 
-        <TouchableOpacity
-          onPress={nextQuestion}
-          style={{
-            backgroundColor: "#7c3aed",
-            paddingVertical: 14,
-            paddingHorizontal: 24,
-            borderRadius: 14,
-          }}
-        >
-          <Text style={{ color: "white", fontSize: 16 }}>
-            Next
-          </Text>
-        </TouchableOpacity>
-      </View>
+        <Text style={styles.title}>Prompt Basics</Text>
+
+        {/* QUESTION */}
+
+        <Text style={styles.question}>{question.question}</Text>
+
+        {/* OPTIONS */}
+
+        {question.options.map((option, index) => {
+          const isCorrect = index === question.correctAnswer;
+
+          const isSelected = index === selectedAnswer;
+
+          let backgroundColor = "rgba(255,255,255,0.7)";
+
+          if (selectedAnswer !== null) {
+            if (isCorrect) {
+              backgroundColor = "#bbf7d0";
+            } else if (isSelected) {
+              backgroundColor = "#fecdd3";
+            }
+          }
+
+          return (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setSelectedAnswer(index)}
+              style={[
+                styles.optionButton,
+                {
+                  backgroundColor,
+                },
+              ]}
+            >
+              <Text style={styles.optionText}>{option}</Text>
+            </TouchableOpacity>
+          );
+        })}
+
+        {/* RESULT CARD */}
+
+        {selectedAnswer !== null && (
+          <View style={styles.resultCard}>
+            <Text style={styles.resultTitle}>
+              {selectedAnswer === question.correctAnswer
+                ? "Correct!"
+                : "Not quite!"}
+            </Text>
+
+            <Text style={styles.resultText}>{question.explanation}</Text>
+          </View>
+        )}
+
+        {/* NAVIGATION BUTTONS */}
+
+        <View style={styles.navigationRow}>
+          <TouchableOpacity
+            onPress={previousQuestion}
+            style={styles.previousButton}
+          >
+            <Text style={styles.navigationText}>Previous</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={nextQuestion} style={styles.nextButton}>
+            <Text style={styles.navigationText}>Next</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  //------------------------------------------------
+  // CONTAINER
+  //------------------------------------------------
+
+  container: {
+    flex: 1,
+    backgroundColor: "#fdf2ff",
+    overflow: "hidden",
+  },
+
+  scrollContent: {
+    padding: 24,
+    paddingTop: 70,
+    paddingBottom: 120,
+  },
+
+  //------------------------------------------------
+  // QUESTION COUNTER
+  //------------------------------------------------
+
+  questionCounter: {
+    color: "#c026d3",
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 14,
+  },
+
+  //------------------------------------------------
+  // PROGRESS BAR
+  //------------------------------------------------
+
+  progressBackground: {
+    height: 14,
+    backgroundColor: "#f5d0fe",
+    borderRadius: 999,
+    overflow: "hidden",
+    marginBottom: 34,
+  },
+
+  progressFill: {
+    height: "100%",
+    backgroundColor: "#a855f7",
+    borderRadius: 999,
+  },
+
+  //------------------------------------------------
+  // TITLE
+  //------------------------------------------------
+
+  title: {
+    color: "#6b21a8",
+    fontSize: 42,
+    fontWeight: "900",
+    marginBottom: 20,
+
+    textShadowColor: "rgba(168,85,247,0.35)",
+    textShadowRadius: 14,
+  },
+
+  //------------------------------------------------
+  // QUESTION
+  //------------------------------------------------
+
+  question: {
+    color: "#86198f",
+    fontSize: 22,
+    lineHeight: 34,
+    marginBottom: 28,
+    fontWeight: "600",
+  },
+
+  //------------------------------------------------
+  // OPTIONS
+  //------------------------------------------------
+
+  optionButton: {
+    padding: 22,
+
+    borderRadius: 24,
+
+    marginBottom: 16,
+
+    borderWidth: 1,
+    borderColor: "rgba(192,132,252,0.3)",
+
+    shadowColor: "#d946ef",
+    shadowOpacity: 0.12,
+    shadowRadius: 12,
+
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    elevation: 4,
+  },
+
+  optionText: {
+    color: "#6b21a8",
+    fontSize: 17,
+    lineHeight: 26,
+    fontWeight: "600",
+  },
+
+  //------------------------------------------------
+  // RESULT CARD
+  //------------------------------------------------
+
+  resultCard: {
+    marginTop: 24,
+
+    backgroundColor: "rgba(255,255,255,0.75)",
+
+    padding: 24,
+
+    borderRadius: 28,
+
+    borderWidth: 1,
+    borderColor: "rgba(192,132,252,0.3)",
+
+    marginBottom: 40,
+  },
+
+  resultTitle: {
+    color: "#7e22ce",
+    fontSize: 24,
+    fontWeight: "900",
+    marginBottom: 14,
+  },
+
+  resultText: {
+    color: "#86198f",
+    fontSize: 17,
+    lineHeight: 28,
+  },
+
+  //------------------------------------------------
+  // NAVIGATION
+  //------------------------------------------------
+
+  navigationRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+
+    marginTop: 10,
+    marginBottom: 30,
+  },
+
+  previousButton: {
+    backgroundColor: "#f0abfc",
+
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+
+    borderRadius: 999,
+
+    minWidth: 140,
+    alignItems: "center",
+  },
+
+  nextButton: {
+    backgroundColor: "#9333ea",
+
+    paddingVertical: 18,
+    paddingHorizontal: 30,
+
+    borderRadius: 999,
+
+    minWidth: 140,
+    alignItems: "center",
+
+    shadowColor: "#a855f7",
+    shadowOpacity: 0.35,
+    shadowRadius: 16,
+
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+  },
+
+  navigationText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "800",
+  },
+
+  //------------------------------------------------
+  // BACKGROUND GLOWS
+  //------------------------------------------------
+
+  glowTop: {
+    position: "absolute",
+
+    width: 320,
+    height: 320,
+
+    borderRadius: 999,
+
+    backgroundColor: "rgba(192,132,252,0.18)",
+
+    top: -120,
+    right: -100,
+  },
+
+  glowBottom: {
+    position: "absolute",
+
+    width: 260,
+    height: 260,
+
+    borderRadius: 999,
+
+    backgroundColor: "rgba(236,72,153,0.16)",
+
+    bottom: -80,
+    left: -80,
+  },
+});
