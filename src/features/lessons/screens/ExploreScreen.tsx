@@ -52,7 +52,7 @@ export default function ExploreScreen() {
           <ModuleCard
             key={module.id}
             module={module}
-            onPress={() => router.push(`/module/${module.id}`)}
+            onPress={() => router.push(`/lesson/${module.id}`)}
             onPractice={() => practiceModule(module.id)}
           />
         ))}
@@ -60,7 +60,7 @@ export default function ExploreScreen() {
 
       <RecommendationList
         modules={recommendations}
-        onModulePress={(id) => router.push(`/module/${id}`)}
+        onModulePress={(id) => router.push(`/lesson/${id}`)}
       />
 
       <View style={styles.playgroundWrapper}>

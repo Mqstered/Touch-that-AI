@@ -35,6 +35,7 @@ export type Database = {
           avatar_url?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       lessons: {
         Row: {
@@ -82,6 +83,7 @@ export type Database = {
           sort_order?: number;
           updated_at?: string;
         };
+        Relationships: [];
       };
       practice_attempts: {
         Row: {
@@ -113,6 +115,7 @@ export type Database = {
           time_spent_s?: number | null;
           completed_at?: string | null;
         };
+        Relationships: [];
       };
       user_progress: {
         Row: {
@@ -144,6 +147,7 @@ export type Database = {
           last_practiced_at?: string | null;
           updated_at?: string;
         };
+        Relationships: [];
       };
       lesson_recommendations: {
         Row: {
@@ -169,6 +173,7 @@ export type Database = {
           priority?: number;
           expires_at?: string | null;
         };
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
