@@ -1,36 +1,38 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import type { LearningModule } from '@/types';
+import type { DbRecommendation } from '@/services/recommendations.service';
 
 type RecommendationListProps = {
-  modules: LearningModule[];
-  onModulePress: (moduleId: string) => void;
+  recommendations: DbRecommendation[];
+  onModulePress: (moduleSlug: string) => void;
 };
 
-export function RecommendationList({ modules, onModulePress }: RecommendationListProps) {
-  if (modules.length === 0) return null;
+export function RecommendationList({ recommendations, onModulePress }: RecommendationListProps) {
+  if (recommendations.length === 0) return null;
 
   return (
     <View style={styles.container}>
       <ThemedText type="smallBold" style={styles.heading}>
         Recommended for you
       </ThemedText>
-      {modules.map((module) => (
-        <ThemedView
-          key={module.id}
-          type="backgroundElement"
-          style={styles.card}
-          onTouchEnd={() => onModulePress(module.id)}
+      {recommendations.map((rec, i) => (
+        <Pressable
+          key={rec.lessonId || `rec-${i}`}
+          onPress={() => onModulePress(rec.moduleSlug)}
         >
-          <ThemedText type="smallBold">{module.title}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
-            {module.mastery}% mastery · {module.category}
-          </ThemedText>
-        </ThemedView>
+          <ThemedView type="backgroundElement" style={styles.card}>
+            <ThemedText type="smallBold">{rec.lessonTitle}</ThemedText>
+            {rec.reason ? (
+              <ThemedText type="small" themeColor="textSecondary" style={styles.reason}>
+                {rec.reason}
+              </ThemedText>
+            ) : null}
+          </ThemedView>
+        </Pressable>
       ))}
     </View>
   );
@@ -48,5 +50,9 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.three,
     padding: Spacing.three,
     marginBottom: Spacing.two,
+  },
+  reason: {
+    marginTop: Spacing.one,
+    lineHeight: 18,
   },
 });

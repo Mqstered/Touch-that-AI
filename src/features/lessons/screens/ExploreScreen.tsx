@@ -9,14 +9,16 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
+import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
 import { RecommendationList } from '@/features/recommendations/components/RecommendationList';
 import { useRecommendations } from '@/features/recommendations/hooks/useRecommendations';
 import { useLearning } from '@/hooks/use-learning';
 
 export default function ExploreScreen() {
   const router = useRouter();
-  const { modules, practiceModule, averageMastery, totalLessons } = useLearning();
-  const recommendations = useRecommendations();
+  const { modules, practiceModule, totalLessons } = useLearning();
+  const { averageMastery } = useUserProgress();
+  const { recommendations } = useRecommendations();
 
   return (
     <AuthGuard>
@@ -59,7 +61,7 @@ export default function ExploreScreen() {
       </View>
 
       <RecommendationList
-        modules={recommendations}
+        recommendations={recommendations}
         onModulePress={(id) => router.push(`/lesson/${id}`)}
       />
 
