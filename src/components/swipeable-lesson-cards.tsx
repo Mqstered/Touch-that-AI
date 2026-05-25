@@ -75,26 +75,33 @@ export function SwipeableLessonCards({
     onPanResponderRelease: (_, gestureState) => {
       if (isAnimating) return; // Prevent gesture during animation
       
-      const swipeThreshold = 50;
-      const swipeVelocityThreshold = 0.3;
+      const swipeThreshold = 40; // Reduced threshold for more responsive swipes
+      const swipeVelocityThreshold = 0.5; // Increased velocity threshold
+      const minSwipeDistance = 15; // Minimum distance to consider any swipe
       
-      // Determine swipe direction based on distance and velocity
-      const isSwipeLeft = gestureState.dx < -swipeThreshold || 
-                         (gestureState.vx < -swipeVelocityThreshold && gestureState.dx < 0);
-      const isSwipeRight = gestureState.dx > swipeThreshold || 
-                          (gestureState.vx > swipeVelocityThreshold && gestureState.dx > 0);
+      // Calculate absolute values for cleaner logic
+      const absDx = Math.abs(gestureState.dx);
+      const absVx = Math.abs(gestureState.vx);
+      
+      // Determine if this is a valid swipe gesture
+      const isValidSwipe = absDx > minSwipeDistance;
+      const hasStrongVelocity = absVx > swipeVelocityThreshold;
+      
+      // Determine swipe direction
+      const isSwipeLeft = gestureState.dx < 0 && (absDx > swipeThreshold || (hasStrongVelocity && gestureState.dx < -minSwipeDistance));
+      const isSwipeRight = gestureState.dx > 0 && (absDx > swipeThreshold || (hasStrongVelocity && gestureState.dx > minSwipeDistance));
 
-      if (isSwipeLeft) {
-        handleSwipe('left');
-      } else if (isSwipeRight) {
-        handleSwipe('right');
+      if (isSwipeLeft || isSwipeRight) {
+        // Complete the swipe animation
+        const direction = isSwipeLeft ? 'left' : 'right';
+        handleSwipe(direction);
       } else {
-        // Snap back to center
+        // Always snap back to center for any non-swipe gesture
         Animated.spring(translateX, {
           toValue: 0,
           useNativeDriver: true,
-          tension: 100,
-          friction: 8,
+          tension: 120, // Slightly higher tension for quicker snap-back
+          friction: 7,  // Slightly less friction for faster settling
         }).start();
       }
     },
