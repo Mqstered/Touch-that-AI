@@ -1,12 +1,12 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  TextInput,
-  View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    TextInput,
+    View,
 } from 'react-native';
 
 import { PrimaryButton } from '@/components/primary-button';
@@ -16,11 +16,11 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useTheme } from '@/hooks/use-theme';
 import { generateFeedback, scorePrompt } from '@/lib/scoring';
 import { fetchEnhancedFeedback } from '@/services/ai.service';
 import { fetchLessonById } from '@/services/lessons.service';
 import { savePracticeAttempt } from '@/services/practice.service';
-import { useTheme } from '@/hooks/use-theme';
 import type { DbLesson, ScoredAttempt } from '@/types';
 
 const MIN_CHARS = 20;
