@@ -5,6 +5,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { BackButton } from '@/components/back-button';
 import { PrimaryButton } from '@/components/primary-button';
 import { ScreenShell } from '@/components/screen-shell';
+import { SwipeableLessonCards } from '@/components/swipeable-lesson-cards';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
@@ -118,10 +119,12 @@ export default function LessonScreen() {
   return (
     <AuthGuard>
       <ScreenShell>
-        {/* Global back button */}
-        <BackButton onPress={() => router.replace('/explore')} />
-        
-        {/* progress indicator */}
+        {/* Header with back button */}
+        <View style={styles.headerContainer}>
+          <BackButton onPress={() => router.replace('/explore')} />
+        </View>
+
+        {/* Fixed progress indicator */}
         <View style={styles.stepRow}>
           {lessons.map((_, i) => (
             <View
@@ -137,76 +140,94 @@ export default function LessonScreen() {
           ))}
         </View>
 
-        {/* header */}
-        <View style={styles.header}>
-          <ThemedText type="small" themeColor="textSecondary" style={styles.levelBadge}>
-            {lesson.level.toUpperCase()} · {lesson.skill}
-          </ThemedText>
-          <ThemedText type="title" style={styles.title}>
-            {lesson.title}
-          </ThemedText>
-          <ThemedText type="subtitle" style={styles.goal}>
-            Goal: {lesson.goal}
-          </ThemedText>
-        </View>
+        {/* Swipeable lesson content */}
+        <SwipeableLessonCards
+          lessons={lessons}
+          currentIndex={currentIndex}
+          onIndexChange={setCurrentIndex}
+        >
+          {(currentLesson: DbLesson, index: number) => (
+            <View style={styles.lessonContent}>
 
-        {/* lesson body */}
-        <ThemedView type="backgroundElement" style={styles.card}>
-          <ThemedText type="default" style={styles.bodyText}>
-            {lesson.lessonText}
-          </ThemedText>
-        </ThemedView>
-
-        {/* bad / good prompt examples */}
-        {(lesson.badPrompt || lesson.goodPrompt) ? (
-          <View style={styles.examples}>
-            {lesson.badPrompt ? (
-              <View style={[styles.exampleBox, styles.badBox]}>
-                <ThemedText type="smallBold" style={styles.exampleLabel}>
-                  ✗ Weak prompt
+              {/* header */}
+              <View style={styles.header}>
+                <ThemedText type="small" themeColor="textSecondary" style={styles.levelBadge}>
+                  {currentLesson.level.toUpperCase()} · {currentLesson.skill}
                 </ThemedText>
-                <ThemedText type="small" style={styles.exampleText}>
-                  {lesson.badPrompt}
+                <ThemedText type="title" style={styles.title}>
+                  {currentLesson.title}
+                </ThemedText>
+                <ThemedText type="subtitle" style={styles.goal}>
+                  Goal: {currentLesson.goal}
                 </ThemedText>
               </View>
-            ) : null}
 
-            {lesson.goodPrompt ? (
-              <View style={[styles.exampleBox, styles.goodBox]}>
-                <ThemedText type="smallBold" style={styles.exampleLabel}>
-                  ✓ Strong prompt
+              {/* lesson body */}
+              <ThemedView type="backgroundElement" style={styles.card}>
+                <ThemedText type="default" style={styles.bodyText}>
+                  {currentLesson.lessonText}
                 </ThemedText>
-                <ThemedText type="small" style={styles.exampleText}>
-                  {lesson.goodPrompt}
+              </ThemedView>
+
+              {/* bad / good prompt examples */}
+              {(currentLesson.badPrompt || currentLesson.goodPrompt) ? (
+                <View style={styles.examples}>
+                  {currentLesson.badPrompt ? (
+                    <View style={[styles.exampleBox, styles.badBox]}>
+                      <ThemedText type="smallBold" style={styles.exampleLabel}>
+                        ✗ Weak prompt
+                      </ThemedText>
+                      <ThemedText type="small" style={styles.exampleText}>
+                        {currentLesson.badPrompt}
+                      </ThemedText>
+                    </View>
+                  ) : null}
+
+                  {currentLesson.goodPrompt ? (
+                    <View style={[styles.exampleBox, styles.goodBox]}>
+                      <ThemedText type="smallBold" style={styles.exampleLabel}>
+                        ✓ Strong prompt
+                      </ThemedText>
+                      <ThemedText type="small" style={styles.exampleText}>
+                        {currentLesson.goodPrompt}
+                      </ThemedText>
+                    </View>
+                  ) : null}
+                </View>
+              ) : null}
+
+              {/* practice task preview */}
+              <ThemedView type="backgroundElement" style={[styles.card, styles.taskCard]}>
+                <ThemedText type="smallBold" style={styles.taskLabel}>
+                  Your practice task
                 </ThemedText>
+                <ThemedText type="default">{currentLesson.practiceTask}</ThemedText>
+              </ThemedView>
+
+              {/* lesson navigation */}
+              <View style={styles.actions}>
+                {index > 0 ? (
+                  <PrimaryButton
+                    title="Previous"
+                    onPress={() => setCurrentIndex((i) => i - 1)}
+                    style={styles.secondaryBtn}
+                  />
+                ) : null}
+                <PrimaryButton
+                  title={index === lessons.length - 1 ? 'Start practice' : 'Next'}
+                  onPress={() => {
+                    if (index === lessons.length - 1) {
+                      handlePractice();
+                    } else {
+                      setCurrentIndex((i) => i + 1);
+                    }
+                  }}
+                  style={styles.primaryBtn}
+                />
               </View>
-            ) : null}
-          </View>
-        ) : null}
-
-        {/* practice task preview */}
-        <ThemedView type="backgroundElement" style={[styles.card, styles.taskCard]}>
-          <ThemedText type="smallBold" style={styles.taskLabel}>
-            Your practice task
-          </ThemedText>
-          <ThemedText type="default">{lesson.practiceTask}</ThemedText>
-        </ThemedView>
-
-        {/* navigation */}
-        <View style={styles.actions}>
-          {currentIndex > 0 ? (
-            <PrimaryButton
-              title="Previous"
-              onPress={() => setCurrentIndex((i) => i - 1)}
-              style={styles.secondaryBtn}
-            />
-          ) : null}
-          <PrimaryButton
-            title={isLast ? 'Start practice' : 'Next'}
-            onPress={handleNext}
-            style={styles.primaryBtn}
-          />
-        </View>
+            </View>
+          )}
+        </SwipeableLessonCards>
       </ScreenShell>
     </AuthGuard>
   );
@@ -219,6 +240,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingTop: Spacing.six,
   },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: Spacing.two,
+    paddingBottom: Spacing.three,
+  },
+  lessonContent: {
+    flex: 1,
+    width: '100%',
+  },
   errorText: {
     color: '#ef4444',
     marginBottom: Spacing.three,
@@ -227,6 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: Spacing.one,
     marginBottom: Spacing.four,
+    alignSelf: 'center',
   },
   stepDot: {
     width: 24,
@@ -299,6 +331,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   primaryBtn: {
-    flex: 2,
+    flex: 1,
   },
 });
