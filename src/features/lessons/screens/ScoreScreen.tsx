@@ -14,6 +14,7 @@ import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
 
 type Params = {
+  lessonId: string;
   moduleSlug: string;
   lessonTitle?: string;
   total: string;
@@ -143,7 +144,13 @@ export default function ScoreScreen() {
         <View style={styles.actions}>
           <PrimaryButton
             title="Try again"
-            onPress={() => router.back()}
+            onPress={() => router.replace({
+              pathname: '/lesson/practice',
+              params: {
+                lessonId: params.lessonId,
+                moduleSlug: params.moduleSlug,
+              },
+            })}
             style={styles.secondaryBtn}
           />
           <PrimaryButton
