@@ -325,7 +325,12 @@ alter table lesson_recommendations enable row level security;
 
 
 -- ---------- user_profiles ----------
--- Users can only read and update their own profile.
+-- Users can insert, read, and update their own profile.
+-- INSERT is needed for the signup trigger to work.
+
+create policy "users can insert own profile"
+  on user_profiles for insert
+  with check (auth.uid() = id);
 
 create policy "users can view own profile"
   on user_profiles for select
