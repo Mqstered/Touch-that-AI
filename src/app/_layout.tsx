@@ -1,10 +1,14 @@
-import { LearningProvider } from "@/context/learning-context";
-import { Stack } from "expo-router";
+import { Stack } from 'expo-router';
+
+import { AuthProvider } from '@/context/auth-context';
+import { LearningProvider } from '@/context/learning-context';
 
 export default function Layout() {
   return (
-    <LearningProvider>
-      <Stack screenOptions={{ headerShown: false }} />
-    </LearningProvider>
+    <AuthProvider>
+      <LearningProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </LearningProvider>
+    </AuthProvider>
   );
 }

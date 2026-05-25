@@ -1,6 +1,8 @@
 import React, { createContext, useMemo, useState, type ReactNode } from 'react';
 
-import { learningModules, type LearningModule } from '@/data/learning-modules';
+import type { LearningModule } from '@/types';
+
+import { learningModules } from '@/data/learning-modules';
 
 export type LearningContextValue = {
   modules: LearningModule[];

@@ -1,15 +1,6 @@
-export type LearningModule = {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  focus: string;
-  mastery: number;
-  lessons: number;
-  progress: number;
-  updatedAt: string;
-  category: string;
-};
+import type { LearningModule } from '@/types/learning';
+
+export type { LearningModule } from '@/types/learning';
 
 export const learningModules: LearningModule[] = [
   {
@@ -50,5 +41,18 @@ export const learningModules: LearningModule[] = [
     progress: 33,
     updatedAt: '2 days ago',
     category: 'Analytics',
+  },
+  {
+    id: 'ai-productivity',
+    title: 'AI Productivity',
+    subtitle: 'Work smarter with AI',
+    description:
+      'Learn to use AI as a thinking partner, automate repetitive writing, and build reusable prompt templates.',
+    focus: 'Apply AI to real everyday tasks and workflows.',
+    mastery: 0,
+    lessons: 2,
+    progress: 0,
+    updatedAt: 'New',
+    category: 'Productivity',
   },
 ];

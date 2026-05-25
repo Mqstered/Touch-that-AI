@@ -14,12 +14,28 @@ export function PrimaryButton({ title, style, ...props }: PrimaryButtonProps) {
 
   return (
     <Pressable
-      style={({ pressed }) => [
-        styles.button,
-        { backgroundColor: theme.backgroundSelected, opacity: pressed ? 0.92 : 1 },
-        style,
-      ]}
+      // style={({ pressed }) => [
+      //   styles.button,
+      //   { backgroundColor: theme.backgroundSelected, opacity: pressed ? 0.92 : 1 },
+      //   style,
+      // ]}
       {...props}
+            style={(state) => {
+        const resolvedStyle =
+          typeof style === 'function'
+            ? style(state)
+            : style;
+
+        return [
+          styles.button,
+          {
+            backgroundColor: theme.backgroundSelected,
+            opacity: state.pressed ? 0.92 : 1,
+          },
+          resolvedStyle,
+        ];
+      }}
+
     >
       <ThemedText type="smallBold" style={styles.buttonText}>
         {title}

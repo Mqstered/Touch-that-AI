@@ -1,39 +1,35 @@
 import React, { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
 import { Spacing } from '@/constants/theme';
+import { fetchPlaygroundResponse } from '@/services/ai.service';
 
-function simulateAiResponse(prompt: string) {
-  const normalized = prompt.trim().toLowerCase();
-  if (!normalized) {
-    return 'Enter a prompt and tap Generate to see an AI-friendly learning answer.';
-  }
-
-  if (normalized.includes('prompt') || normalized.includes('instruction')) {
-    return 'A strong AI prompt is clear, goal-oriented, and includes examples or formatting instructions. Focus on what you want, how you want it, and who it is for.';
-  }
-
-  if (normalized.includes('safety') || normalized.includes('ethical')) {
-    return 'AI safety is about controlling bias, avoiding harmful content, and giving the model explicit guardrails. Use safe prompts and verify outputs carefully.';
-  }
-
-  if (normalized.includes('learn') || normalized.includes('study')) {
-    return 'To learn effectively, break the topic into bite-sized steps, practice with examples, and revisit the hardest concepts until they feel comfortable.';
-  }
-
-  return 'This AI demo answer is based on your prompt. In a live integration, the model would return a detailed response tailored to your request.';
-}
+const WEAK_EXAMPLE = 'Plan my day.';
+const STRONG_EXAMPLE =
+  'Plan my day. I work 9 AM–6 PM, want 30 minutes of exercise, and need 1 hour to study. Give it as a table.';
 
 export function PromptPlayground() {
   const theme = useTheme();
   const [prompt, setPrompt] = useState('Explain why prompt structure matters');
-  const [response, setResponse] = useState(simulateAiResponse(prompt));
+  const [response, setResponse] = useState(
+    'Enter a prompt and tap Generate to try the AI playground.',
+  );
+  const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<'default' | 'weak' | 'strong'>('default');
 
-  const handleGenerate = () => {
-    setResponse(simulateAiResponse(prompt));
+  const handleGenerate = async () => {
+    setLoading(true);
+    const text = await fetchPlaygroundResponse(prompt, mode);
+    setResponse(text);
+    setLoading(false);
+  };
+
+  const applyExample = (text: string, exampleMode: 'weak' | 'strong') => {
+    setPrompt(text);
+    setMode(exampleMode);
   };
 
   const helperText = useMemo(
@@ -45,22 +41,48 @@ export function PromptPlayground() {
     <ThemedView type="backgroundElement" style={styles.container}>
       <ThemedText type="smallBold">AI prompt playground</ThemedText>
       <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
-        Use this demo to craft a learning-focused request and preview a simulated AI response.
+        Test prompts with Gemini Flash (via secure backend). Compare weak vs strong examples.
       </ThemedText>
+
+      <View style={styles.exampleRow}>
+        <Pressable
+          style={[styles.exampleBtn, { borderColor: theme.backgroundSelected }]}
+          onPress={() => applyExample(WEAK_EXAMPLE, 'weak')}
+        >
+          <ThemedText type="small">Weak example</ThemedText>
+        </Pressable>
+        <Pressable
+          style={[styles.exampleBtn, { borderColor: theme.backgroundSelected }]}
+          onPress={() => applyExample(STRONG_EXAMPLE, 'strong')}
+        >
+          <ThemedText type="small">Strong example</ThemedText>
+        </Pressable>
+      </View>
 
       <TextInput
         value={prompt}
         placeholder="Ask your AI coach..."
         placeholderTextColor={theme.textSecondary}
-        onChangeText={setPrompt}
+        onChangeText={(text) => {
+          setPrompt(text);
+          setMode('default');
+        }}
         style={[styles.input, { color: theme.text, borderColor: theme.backgroundSelected }]}
         multiline
       />
 
-      <Pressable style={[styles.button, { backgroundColor: theme.text }]} onPress={handleGenerate}>
-        <ThemedText type="smallBold" style={styles.buttonText}>
-          Generate
-        </ThemedText>
+      <Pressable
+        style={[styles.button, { backgroundColor: theme.text }]}
+        onPress={handleGenerate}
+        disabled={loading}
+      >
+        {loading ? (
+          <ActivityIndicator color="#fff" size="small" />
+        ) : (
+          <ThemedText type="smallBold" style={styles.buttonText}>
+            Generate
+          </ThemedText>
+        )}
       </Pressable>
 
       <ThemedView type="backgroundSelected" style={styles.responseCard}>
@@ -87,6 +109,18 @@ const styles = StyleSheet.create({
     marginTop: Spacing.one,
     marginBottom: Spacing.two,
   },
+  exampleRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+    marginBottom: Spacing.two,
+  },
+  exampleBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: Spacing.two,
+    padding: Spacing.two,
+    alignItems: 'center',
+  },
   input: {
     width: '100%',
     minHeight: 100,
@@ -102,6 +136,8 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.three,
     borderRadius: Spacing.three,
     alignItems: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
   },
   buttonText: {
     color: '#fff',

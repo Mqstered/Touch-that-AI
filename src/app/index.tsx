@@ -1,5 +1,3 @@
-import StartScreen from "../StartScreen";
+import OnboardingScreen from '@/features/auth/screens/OnboardingScreen';
 
-export default function Index() {
-  return <StartScreen />;
-}
+export default OnboardingScreen;
