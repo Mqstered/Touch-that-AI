@@ -1,5 +1,6 @@
+import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { BackButton } from '@/components/back-button';
@@ -10,6 +11,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
 
 type Params = {
   moduleSlug: string;
@@ -41,8 +43,16 @@ function scoreColor(score: number, max: number): string {
 export default function ScoreScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<Params>();
+  const { refresh } = useUserProgress();
 
   const total = Number(params.total ?? 0);
+
+  // Refresh progress data when screen comes into focus (after lesson completion)
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
   const feedback: string[] = (() => {
     try { return JSON.parse(params.feedback ?? '[]') as string[]; }
     catch { return []; }

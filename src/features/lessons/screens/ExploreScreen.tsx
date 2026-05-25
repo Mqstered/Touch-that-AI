@@ -10,14 +10,14 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
-import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
-import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { LessonFinder } from '@/features/lessons/components/LessonFinder';
 import { PersonalizedPathCard } from '@/features/personalization/components/PersonalizedPathCard';
 import { usePersonalizedLearning } from '@/features/personalization/hooks/usePersonalizedLearning';
+import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
+import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
 import { RecommendationList } from '@/features/recommendations/components/RecommendationList';
 import { useRecommendations } from '@/features/recommendations/hooks/useRecommendations';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useLearning } from '@/hooks/use-learning';
 import { fetchNextPracticeLesson } from '@/services/lessons.service';
 
@@ -25,7 +25,7 @@ export default function ExploreScreen() {
   const router = useRouter();
   const { state } = useAuth();
   const { modules, totalLessons } = useLearning();
-  const { averageMastery } = useUserProgress();
+  const { progress, averageMastery } = useUserProgress();
   const { recommendations, refresh } = useRecommendations();
   const {
     profile,
@@ -81,40 +81,44 @@ export default function ExploreScreen() {
       />
 
       <View style={styles.moduleList}>
-        {modules.map((module) => (
-          <ModuleCard
-            key={module.id}
-            module={module}
-            onPress={() =>
-              router.push({
-                pathname: '/lesson/[moduleSlug]',
-                params: { moduleSlug: module.id },
-              })
-            }
-            onPractice={async () => {
-              if (state.status === 'authenticated') {
-                const next = await fetchNextPracticeLesson(
-                  state.session.user.id,
-                  module.id,
-                );
-                if (next.ok && next.data) {
-                  router.push({
-                    pathname: '/lesson/practice',
-                    params: {
-                      lessonId: next.data.id,
-                      moduleSlug: module.id,
-                    },
-                  });
-                  return;
-                }
+        {modules.map((module) => {
+          const moduleProgress = progress.find(p => p.moduleId === module.id) || null;
+          return (
+            <ModuleCard
+              key={module.id}
+              module={module}
+              progress={moduleProgress}
+              onPress={() =>
+                router.push({
+                  pathname: '/lesson/[moduleSlug]',
+                  params: { moduleSlug: module.id },
+                })
               }
-              router.push({
-                pathname: '/lesson/[moduleSlug]',
-                params: { moduleSlug: module.id },
-              });
-            }}
-          />
-        ))}
+              onPractice={async () => {
+                if (state.status === 'authenticated') {
+                  const next = await fetchNextPracticeLesson(
+                    state.session.user.id,
+                    module.id,
+                  );
+                  if (next.ok && next.data) {
+                    router.push({
+                      pathname: '/lesson/practice',
+                      params: {
+                        lessonId: next.data.id,
+                        moduleSlug: module.id,
+                      },
+                    });
+                    return;
+                  }
+                }
+                router.push({
+                  pathname: '/lesson/[moduleSlug]',
+                  params: { moduleSlug: module.id },
+                });
+              }}
+            />
+          );
+        })}
       </View>
 
       <RecommendationList

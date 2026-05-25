@@ -56,8 +56,28 @@ export async function fetchProgressForModule(
 }
 
 export async function updateProgress(
-  _userId: string,
+  userId: string,
   entry: ProgressEntry,
 ): Promise<ApiResult<ProgressEntry>> {
-  return ok(entry);
+  const { data, error } = await supabase
+    .from('user_progress')
+    .upsert({
+      user_id: userId,
+      module_slug: entry.moduleId,
+      mastery: entry.mastery,
+      completed_lessons: entry.completedLessons,
+      last_practiced_at: entry.lastActivity,
+    })
+    .select('module_slug, mastery, completed_lessons, last_practiced_at')
+    .single();
+
+  if (error) return err(error.message);
+
+  return ok({
+    moduleId: data.module_slug,
+    mastery: data.mastery,
+    completedLessons: data.completed_lessons,
+    totalLessons: entry.totalLessons,
+    lastActivity: data.last_practiced_at ?? new Date().toISOString(),
+  });
 }

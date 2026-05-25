@@ -1,19 +1,26 @@
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { LearningModule } from '@/data/learning-modules';
+import { ProgressBar } from '@/components/progress-bar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ProgressBar } from '@/components/progress-bar';
 import { Spacing } from '@/constants/theme';
+import { LearningModule } from '@/data/learning-modules';
+import type { ProgressEntry } from '@/types';
 
 type ModuleCardProps = {
   module: LearningModule;
+  progress?: ProgressEntry | null;
   onPress: () => void;
   onPractice: () => void;
 };
 
-export function ModuleCard({ module, onPress, onPractice }: ModuleCardProps) {
+export function ModuleCard({ module, progress, onPress, onPractice }: ModuleCardProps) {
+  // Calculate real progress percentage from user data
+  const progressPercentage = progress 
+    ? Math.round((progress.completedLessons / module.lessons) * 100)
+    : 0;
+
   return (
     <ThemedView type="backgroundElement" style={styles.card}>
       <Pressable onPress={onPress} style={styles.pressable}>
@@ -28,8 +35,8 @@ export function ModuleCard({ module, onPress, onPractice }: ModuleCardProps) {
         </ThemedText>
 
         <View style={styles.progressRow}>
-          <ProgressBar value={module.progress} style={styles.progress} />
-          <ThemedText type="smallBold">{module.progress}%</ThemedText>
+          <ProgressBar value={progressPercentage} style={styles.progress} />
+          <ThemedText type="smallBold">{progressPercentage}%</ThemedText>
         </View>
       </Pressable>
 
