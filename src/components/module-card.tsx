@@ -3,7 +3,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ProgressBar } from '@/components/progress-bar';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { LearningModule } from '@/data/learning-modules';
 import type { ProgressEntry } from '@/types';
@@ -22,28 +21,28 @@ export function ModuleCard({ module, progress, onPress, onPractice }: ModuleCard
     : 0;
 
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <View style={styles.card}>
       <Pressable onPress={onPress} style={styles.pressable}>
         <View style={styles.header}>
-          <ThemedText type="smallBold">{module.title}</ThemedText>
-          <ThemedText type="small" themeColor="textSecondary">
+          <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>{module.title}</ThemedText>
+          <ThemedText type="small" style={{ color: '#d8b4fe' }}>
             {module.category}
           </ThemedText>
         </View>
-        <ThemedText type="default" style={styles.description}>
+        <ThemedText type="default" style={[styles.description, { color: '#f9a8d4' }]}>
           {module.subtitle}
         </ThemedText>
 
         <View style={styles.progressRow}>
           <ProgressBar value={progressPercentage} style={styles.progress} />
-          <ThemedText type="smallBold">{progressPercentage}%</ThemedText>
+          <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>{progressPercentage}%</ThemedText>
         </View>
       </Pressable>
 
       <Pressable style={styles.practiceButton} onPress={onPractice}>
-        <ThemedText type="smallBold">Practice</ThemedText>
+        <ThemedText type="smallBold" style={{ color: '#ffffff' }}>Practice</ThemedText>
       </Pressable>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -53,6 +52,14 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.four,
     padding: Spacing.four,
     marginBottom: Spacing.three,
+    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
+    shadowColor: '#9333ea',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   pressable: {
     marginBottom: Spacing.three,
@@ -79,5 +86,8 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.one,
     paddingHorizontal: Spacing.four,
     borderRadius: Spacing.two,
+    backgroundColor: '#9333ea',
+    borderWidth: 1,
+    borderColor: '#a855f7',
   },
 });

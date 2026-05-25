@@ -8,6 +8,7 @@ interface SwipeableLessonCardsProps {
   lessons: DbLesson[];
   currentIndex: number;
   onIndexChange: (index: number) => void;
+  onLessonEnd?: () => void;
   children: (lesson: DbLesson, index: number) => React.ReactNode;
 }
 
@@ -15,6 +16,7 @@ export function SwipeableLessonCards({
   lessons,
   currentIndex,
   onIndexChange,
+  onLessonEnd,
   children,
 }: SwipeableLessonCardsProps) {
   const theme = useTheme();
@@ -34,6 +36,14 @@ export function SwipeableLessonCards({
     
     // Update index immediately, then animate the content
     onIndexChange(newIndex);
+    
+    // Check if user reached the end of the lesson
+    if (direction === 'left' && newIndex === lessons.length - 1 && onLessonEnd) {
+      // Trigger lesson end callback after animation completes
+      setTimeout(() => {
+        onLessonEnd();
+      }, 300);
+    }
     
     // Animate from opposite side for smooth transition
     const fromValue = direction === 'left' ? 300 : -300;

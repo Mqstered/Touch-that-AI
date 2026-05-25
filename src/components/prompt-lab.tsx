@@ -39,37 +39,37 @@ export function PromptLab() {
   };
 
   return (
-    <ThemedView type="backgroundElement" style={styles.container}>
-      <ThemedText type="smallBold">Prompt Lab — A/B Compare</ThemedText>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+    <View style={styles.container}>
+      <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>Prompt Lab — A/B Compare</ThemedText>
+      <ThemedText type="small" style={[styles.hint, { color: '#d8b4fe' }]}>
         See how the same goal gets different AI answers when your prompt adds context,
         constraints, and format. Live rubric score updates as you edit the strong prompt.
       </ThemedText>
 
-      <ThemedText type="smallBold" style={styles.sectionLabel}>
+      <ThemedText type="smallBold" style={[styles.sectionLabel, { color: '#e9d5ff' }]}>
         Weak prompt
       </ThemedText>
       <TextInput
         value={weakPrompt}
         onChangeText={setWeakPrompt}
-        style={[styles.input, { color: theme.text, borderColor: theme.backgroundSelected }]}
+        style={[styles.input, { color: '#1f2937', borderColor: '#d8b4fe', backgroundColor: '#ffffff' }]}
         multiline
-        placeholderTextColor={theme.textSecondary}
+        placeholderTextColor="#9ca3af"
       />
 
-      <ThemedText type="smallBold" style={styles.sectionLabel}>
+      <ThemedText type="smallBold" style={[styles.sectionLabel, { color: '#e9d5ff' }]}>
         Strong prompt
       </ThemedText>
       <TextInput
         value={strongPrompt}
         onChangeText={setStrongPrompt}
-        style={[styles.input, { color: theme.text, borderColor: '#22c55e' }]}
+        style={[styles.input, { color: '#1f2937', borderColor: '#22c55e', backgroundColor: '#ffffff' }]}
         multiline
-        placeholderTextColor={theme.textSecondary}
+        placeholderTextColor="#9ca3af"
       />
 
       <View style={styles.liveScoreRow}>
-        <ThemedText type="small">Live prompt score</ThemedText>
+        <ThemedText type="small" style={{ color: '#d8b4fe' }}>Live prompt score</ThemedText>
         <ThemedText type="smallBold" style={{ color: scorePct >= 70 ? '#22c55e' : '#f59e0b' }}>
           {liveScore.total}/10
         </ThemedText>
@@ -112,11 +112,11 @@ export function PromptLab() {
       ) : null}
 
       {tip ? (
-        <ThemedText type="small" themeColor="textSecondary" style={styles.tip}>
+        <ThemedText type="small" style={[styles.tip, { color: '#d8b4fe' }]}>
           {tip}
         </ThemedText>
       ) : null}
-    </ThemedView>
+    </View>
   );
 }
 
@@ -125,6 +125,14 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: Spacing.four,
     padding: Spacing.four,
+    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
+    shadowColor: '#9333ea',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   hint: {
     marginTop: Spacing.one,
@@ -133,7 +141,6 @@ const styles = StyleSheet.create({
   },
   sectionLabel: {
     marginBottom: Spacing.one,
-    color: '#7e22ce',
   },
   input: {
     width: '100%',
@@ -173,6 +180,9 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.three,
     padding: Spacing.three,
     borderLeftWidth: 3,
+    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
   },
   weakCard: {
     borderLeftColor: '#ef4444',
@@ -190,10 +200,12 @@ const styles = StyleSheet.create({
   },
   responseText: {
     lineHeight: 20,
+    color: '#d8b4fe',
   },
   tip: {
     marginTop: Spacing.two,
     lineHeight: 18,
     fontStyle: 'italic',
+    color: '#d8b4fe',
   },
 });

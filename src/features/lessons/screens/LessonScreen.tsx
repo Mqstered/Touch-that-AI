@@ -1,8 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, ScrollView, StyleSheet, View } from 'react-native';
 
 import { BackButton } from '@/components/back-button';
+import { LessonEndToast } from '@/components/lesson-end-toast';
 import { PrimaryButton } from '@/components/primary-button';
 import { ScreenShell } from '@/components/screen-shell';
 import { SwipeableLessonCards } from '@/components/swipeable-lesson-cards';
@@ -28,6 +29,11 @@ export default function LessonScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showToast, setShowToast] = useState(false);
+  const [highlightPractice, setHighlightPractice] = useState(false);
+  
+  const scrollViewRef = useRef<ScrollView>(null);
+  const practiceButtonScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     if (!moduleSlug) return;
@@ -108,6 +114,37 @@ export default function LessonScreen() {
     });
   };
 
+  const handleLessonEnd = () => {
+    // Show toast notification
+    setShowToast(true);
+    
+    // Scroll to practice button after a short delay
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 500);
+    
+    // Highlight practice button with pulse animation
+    setHighlightPractice(true);
+    startPulseAnimation();
+  };
+
+  const startPulseAnimation = () => {
+    const pulse = Animated.sequence([
+      Animated.timing(practiceButtonScale, {
+        toValue: 1.05,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(practiceButtonScale, {
+        toValue: 1,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]);
+    
+    Animated.loop(pulse).start();
+  };
+
   const handleNext = () => {
     if (!isLast) {
       setCurrentIndex((i) => i + 1);
@@ -119,33 +156,45 @@ export default function LessonScreen() {
   return (
     <AuthGuard>
       <ScreenShell>
-        {/* Header with back button */}
-        <View style={styles.headerContainer}>
-          <BackButton onPress={() => router.replace('/explore')} />
-        </View>
-
-        {/* Fixed progress indicator */}
-        <View style={styles.stepRow}>
-          {lessons.map((_, i) => (
-            <View
-              key={i}
-              style={[
-                styles.stepDot,
-                {
-                  backgroundColor:
-                    i <= currentIndex ? theme.text : theme.backgroundSelected,
-                },
-              ]}
-            />
-          ))}
-        </View>
-
-        {/* Swipeable lesson content */}
-        <SwipeableLessonCards
-          lessons={lessons}
-          currentIndex={currentIndex}
-          onIndexChange={setCurrentIndex}
+        {/* Toast notification */}
+        <LessonEndToast 
+          visible={showToast} 
+          onHide={() => setShowToast(false)} 
+        />
+        
+        <ScrollView 
+          ref={scrollViewRef}
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={false}
         >
+          {/* Header with back button */}
+          <View style={styles.headerContainer}>
+            <BackButton onPress={() => router.replace('/explore')} />
+          </View>
+
+          {/* Fixed progress indicator */}
+          <View style={styles.stepRow}>
+            {lessons.map((_, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.stepDot,
+                  {
+                    backgroundColor:
+                      i <= currentIndex ? theme.text : theme.backgroundSelected,
+                  },
+                ]}
+              />
+            ))}
+          </View>
+
+          {/* Swipeable lesson content */}
+          <SwipeableLessonCards
+            lessons={lessons}
+            currentIndex={currentIndex}
+            onIndexChange={setCurrentIndex}
+            onLessonEnd={handleLessonEnd}
+          >
           {(currentLesson: DbLesson, index: number) => (
             <View style={styles.lessonContent}>
 
@@ -213,27 +262,38 @@ export default function LessonScreen() {
                     style={styles.secondaryBtn}
                   />
                 ) : null}
-                <PrimaryButton
-                  title={index === lessons.length - 1 ? 'Start practice' : 'Next'}
-                  onPress={() => {
-                    if (index === lessons.length - 1) {
-                      handlePractice();
-                    } else {
-                      setCurrentIndex((i) => i + 1);
-                    }
-                  }}
-                  style={styles.primaryBtn}
-                />
+                <Animated.View
+                  style={[
+                    index === lessons.length - 1 && highlightPractice && styles.highlightedButton,
+                    { transform: [{ scale: index === lessons.length - 1 ? practiceButtonScale : 1 }] }
+                  ]}
+                >
+                  <PrimaryButton
+                    title={index === lessons.length - 1 ? 'Start practice' : 'Next'}
+                    onPress={() => {
+                      if (index === lessons.length - 1) {
+                        handlePractice();
+                      } else {
+                        setCurrentIndex((i) => i + 1);
+                      }
+                    }}
+                    style={styles.primaryBtn}
+                  />
+                </Animated.View>
               </View>
             </View>
           )}
         </SwipeableLessonCards>
+        </ScrollView>
       </ScreenShell>
     </AuthGuard>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   center: {
     flex: 1,
     alignItems: 'center',
@@ -245,6 +305,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: Spacing.two,
     paddingBottom: Spacing.three,
+  },
+  highlightedButton: {
+    shadowColor: '#9333ea',
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 8,
+    elevation: 12,
   },
   lessonContent: {
     flex: 1,

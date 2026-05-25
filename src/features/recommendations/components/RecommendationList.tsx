@@ -2,7 +2,6 @@ import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import type { DbRecommendation } from '@/services/recommendations.service';
 
@@ -16,7 +15,7 @@ export function RecommendationList({ recommendations, onModulePress }: Recommend
 
   return (
     <View style={styles.container}>
-      <ThemedText type="smallBold" style={styles.heading}>
+      <ThemedText type="smallBold" style={[styles.heading, { color: '#e9d5ff' }]}>
         Your next steps
       </ThemedText>
       {recommendations.map((rec, i) => (
@@ -25,15 +24,16 @@ export function RecommendationList({ recommendations, onModulePress }: Recommend
           onPress={() =>
             onModulePress(rec.moduleSlug, rec.lessonId || undefined)
           }
+          style={styles.pressable}
         >
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="smallBold">{rec.lessonTitle}</ThemedText>
+          <View style={styles.card}>
+            <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>{rec.lessonTitle}</ThemedText>
             {rec.reason ? (
-              <ThemedText type="small" themeColor="textSecondary" style={styles.reason}>
+              <ThemedText type="small" style={[styles.reason, { color: '#d8b4fe' }]}>
                 {rec.reason}
               </ThemedText>
             ) : null}
-          </ThemedView>
+          </View>
         </Pressable>
       ))}
     </View>
@@ -47,11 +47,21 @@ const styles = StyleSheet.create({
   heading: {
     marginBottom: Spacing.two,
   },
+  pressable: {
+    marginBottom: Spacing.two,
+  },
   card: {
     width: '100%',
     borderRadius: Spacing.three,
     padding: Spacing.three,
-    marginBottom: Spacing.two,
+    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(168, 85, 247, 0.3)',
+    shadowColor: '#9333ea',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   reason: {
     marginTop: Spacing.one,

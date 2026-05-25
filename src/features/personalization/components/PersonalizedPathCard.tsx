@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 import { PrimaryButton } from '@/components/primary-button';
 import { ThemedText } from '@/components/themed-text';
@@ -103,16 +103,23 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.four,
     padding: Spacing.four,
     marginBottom: Spacing.four,
-    borderLeftWidth: 3,
+    borderLeftWidth: 4,
     borderLeftColor: '#9333ea',
+    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    shadowColor: '#9333ea',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 8,
   },
   heading: {
-    color: '#7e22ce',
+    color: '#e9d5ff',
     marginBottom: Spacing.two,
   },
   insight: {
     lineHeight: 20,
     marginBottom: Spacing.three,
+    color: '#d8b4fe',
   },
   statsRow: {
     flexDirection: 'row',
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.two,
     paddingVertical: Spacing.one,
     borderRadius: Spacing.two,
-    backgroundColor: 'rgba(147,51,234,0.08)',
+    backgroundColor: 'rgba(147,51,234,0.2)',
   },
   focusLine: {
     marginBottom: Spacing.two,
