@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { BackButton } from '@/components/back-button';
 import { PrimaryButton } from '@/components/primary-button';
 import { ProgressBar } from '@/components/progress-bar';
 import { ScreenShell } from '@/components/screen-shell';
@@ -66,6 +67,9 @@ export default function ScoreScreen() {
   return (
     <AuthGuard>
       <ScreenShell>
+        {/* Global back button */}
+        <BackButton onPress={() => router.replace('/explore')} />
+        
         {/* hero score */}
         <View style={styles.heroSection}>
           {params.lessonTitle ? (

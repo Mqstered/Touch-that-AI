@@ -2,6 +2,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
+import { BackButton } from '@/components/back-button';
 import { PrimaryButton } from '@/components/primary-button';
 import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
@@ -117,6 +118,9 @@ export default function LessonScreen() {
   return (
     <AuthGuard>
       <ScreenShell>
+        {/* Global back button */}
+        <BackButton onPress={() => router.replace('/explore')} />
+        
         {/* progress indicator */}
         <View style={styles.stepRow}>
           {lessons.map((_, i) => (
@@ -192,7 +196,7 @@ export default function LessonScreen() {
         <View style={styles.actions}>
           {currentIndex > 0 ? (
             <PrimaryButton
-              title="Back"
+              title="Previous"
               onPress={() => setCurrentIndex((i) => i - 1)}
               style={styles.secondaryBtn}
             />

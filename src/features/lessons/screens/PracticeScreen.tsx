@@ -1,14 +1,15 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    TextInput,
-    View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
 } from 'react-native';
 
+import { BackButton } from '@/components/back-button';
 import { PrimaryButton } from '@/components/primary-button';
 import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
@@ -147,6 +148,9 @@ export default function PracticeScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScreenShell>
+          {/* Global back button */}
+          <BackButton onPress={() => router.back()} />
+          
           <ThemedText type="smallBold" style={styles.lessonTitle}>
             {lesson.title}
           </ThemedText>
