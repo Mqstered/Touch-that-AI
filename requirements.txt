@@ -1,0 +1,61 @@
+# Touch That AI - Dependencies
+# Generated from package.json dependencies
+# Note: This is a React Native/Expo project - dependencies are managed via npm/yarn
+# This file is for reference and Python backend dependencies (if any)
+
+# Expo & React Native Core
+expo==55.0.24
+react==19.2.0
+react-dom==19.2.0
+react-native==0.83.6
+react-native-web==0.21.0
+
+# Expo Router & Navigation
+expo-router==55.0.14
+@react-navigation/native==7.1.33
+@react-navigation/bottom-tabs==7.15.5
+@react-navigation/elements==2.9.10
+
+# Expo Modules
+@expo/metro-runtime==55.0.11
+expo-constants==55.0.16
+expo-device==55.0.17
+expo-font==55.0.7
+expo-glass-effect==55.0.11
+expo-image==55.0.10
+expo-linear-gradient==55.0.14
+expo-linking==55.0.15
+expo-splash-screen==55.0.21
+expo-sqlite==55.0.16
+expo-status-bar==55.0.6
+expo-symbols==55.0.8
+expo-system-ui==55.0.18
+expo-web-browser==55.0.16
+
+# React Native Libraries
+@react-native-async-storage/async-storage==2.2.0
+react-native-gesture-handler==2.30.0
+react-native-reanimated==4.2.1
+react-native-safe-area-context==5.6.2
+react-native-screens==4.23.0
+react-native-url-polyfill==3.0.0
+react-native-worklets==0.7.4
+
+# Animation & UI
+@lottiefiles/dotlottie-react==0.13.5
+lottie-react-native==7.3.4
+react-native-confetti-cannon==1.5.2
+
+# Database & Backend
+@supabase/supabase-js==2.106.1
+wa-sqlite==1.0.0
+
+# Development Dependencies
+@types/react==19.2.2
+typescript==5.9.2
+
+# Installation Notes:
+# This project uses npm/yarn for package management
+# Run: npm install or yarn install
+# For Expo CLI: npm install -g @expo/cli
+# Development: npm start or expo start
