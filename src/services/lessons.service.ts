@@ -68,3 +68,37 @@ export async function fetchLessonById(lessonId: string): Promise<ApiResult<DbLes
 
   return ok(lesson);
 }
+
+const MASTERED_SCORE = 80;
+
+/**
+ * Next lesson in a module the user should practice (first not yet mastered).
+ * Falls back to first lesson in module.
+ */
+export async function fetchNextPracticeLesson(
+  userId: string,
+  moduleSlug: string,
+): Promise<ApiResult<DbLesson | null>> {
+  const lessonsResult = await fetchLessonsForModule(moduleSlug);
+  if (!lessonsResult.ok || lessonsResult.data.length === 0) {
+    return lessonsResult.ok ? ok(null) : lessonsResult;
+  }
+
+  const { data: attempts } = await supabase
+    .from('practice_attempts')
+    .select('lesson_id, score')
+    .eq('user_id', userId)
+    .not('completed_at', 'is', null);
+
+  const bestByLesson = new Map<string, number>();
+  for (const row of attempts ?? []) {
+    const prev = bestByLesson.get(row.lesson_id) ?? 0;
+    bestByLesson.set(row.lesson_id, Math.max(prev, row.score ?? 0));
+  }
+
+  const next =
+    lessonsResult.data.find((l) => (bestByLesson.get(l.id) ?? 0) < MASTERED_SCORE) ??
+    lessonsResult.data[0];
+
+  return ok(next);
+}

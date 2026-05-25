@@ -17,7 +17,7 @@ export function RecommendationList({ recommendations, onModulePress }: Recommend
   return (
     <View style={styles.container}>
       <ThemedText type="smallBold" style={styles.heading}>
-        Recommended for you
+        Your next steps
       </ThemedText>
       {recommendations.map((rec, i) => (
         <Pressable

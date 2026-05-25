@@ -12,6 +12,7 @@ import { AuthGuard } from '@/features/auth/components/AuthGuard';
 
 type Params = {
   moduleSlug: string;
+  lessonTitle?: string;
   total: string;
   clarity: string;
   context: string;
@@ -67,6 +68,11 @@ export default function ScoreScreen() {
       <ScreenShell>
         {/* hero score */}
         <View style={styles.heroSection}>
+          {params.lessonTitle ? (
+            <ThemedText type="small" themeColor="textSecondary" style={styles.lessonLabel}>
+              {params.lessonTitle}
+            </ThemedText>
+          ) : null}
           <ThemedText type="title" style={styles.scoreNumber}>
             {total}<ThemedText type="subtitle" style={styles.scoreMax}>/10</ThemedText>
           </ThemedText>
@@ -143,6 +149,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.five,
     paddingTop: Spacing.three,
+  },
+  lessonLabel: {
+    marginBottom: Spacing.two,
+    textAlign: 'center',
   },
   scoreNumber: {
     fontSize: 72,

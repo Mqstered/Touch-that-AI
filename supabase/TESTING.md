@@ -159,7 +159,14 @@ where lr.user_id = '<your-user-uuid>'
 order by lr.priority;
 ```
 
-**Edge Functions:** Set `GEMINI_API_KEY` in Supabase secrets and deploy `enhance-feedback` and `playground-complete`.
+**Edge Functions:** Set `GEMINI_API_KEY` in Supabase secrets and deploy `enhance-feedback`, `playground-complete`, and `learning-path-insight`.
+
+**Personalized path (migration 004):** See [docs/PERSONALIZED_LEARNING.md](../docs/PERSONALIZED_LEARNING.md).
+
+```sql
+select * from user_learner_profile where user_id = '<uuid>';
+select build_personalized_learning_path('<uuid>');
+```
 
 ---
 

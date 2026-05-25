@@ -2,11 +2,16 @@ import { supabase } from '@/lib/supabase';
 import type { ScoreBreakdown } from '@/types';
 
 type EnhanceFeedbackResponse = { tip: string | null; error?: string };
-type PlaygroundResponse = { text: string };
+type PlaygroundResponse = {
+  text?: string | null;
+  error?: string | null;
+  weakText?: string | null;
+  strongText?: string | null;
+  comparisonTip?: string | null;
+};
 
 /**
  * Optional Gemini-enhanced feedback (server-side only).
- * Returns null tip on failure — caller should keep rule-based tips.
  */
 export async function fetchEnhancedFeedback(
   userResponse: string,
@@ -33,13 +38,10 @@ export async function fetchEnhancedFeedback(
     },
   );
 
-  if (error || !data?.tip) return null;
-  return data.tip;
+  if (error) return null;
+  return data?.tip ?? null;
 }
 
-/**
- * Live AI response for the Explore playground.
- */
 export async function fetchPlaygroundResponse(
   prompt: string,
   mode: 'default' | 'weak' | 'strong' = 'default',
@@ -50,8 +52,57 @@ export async function fetchPlaygroundResponse(
   );
 
   if (error) {
-    return 'Could not reach the AI playground. Check your connection or try again later.';
+    return `Playground unavailable: ${error.message}. Deploy with: supabase functions deploy playground-complete`;
+  }
+
+  if (data?.error) {
+    return data.error;
   }
 
   return data?.text ?? 'No response generated.';
+}
+
+export type CompareResult = {
+  weakText: string;
+  strongText: string;
+  comparisonTip: string | null;
+};
+
+/** A/B compare weak vs strong prompts — signature Prompt Lab feature. */
+export async function fetchPromptCompare(
+  weakPrompt: string,
+  strongPrompt: string,
+): Promise<CompareResult> {
+  const { data, error } = await supabase.functions.invoke<PlaygroundResponse>(
+    'playground-complete',
+    {
+      body: {
+        mode: 'compare',
+        weakPrompt,
+        strongPrompt,
+      },
+    },
+  );
+
+  if (error) {
+    return {
+      weakText: `Error: ${error.message}`,
+      strongText: 'Deploy: supabase functions deploy playground-complete',
+      comparisonTip: null,
+    };
+  }
+
+  if (data?.error && !data.weakText && !data.strongText) {
+    return {
+      weakText: data.error,
+      strongText: data.error,
+      comparisonTip: null,
+    };
+  }
+
+  return {
+    weakText: data?.weakText ?? 'No response',
+    strongText: data?.strongText ?? 'No response',
+    comparisonTip: data?.comparisonTip ?? null,
+  };
 }

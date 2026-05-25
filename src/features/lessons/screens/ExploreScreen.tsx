@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { ModuleCard } from '@/components/module-card';
-import { PromptPlayground } from '@/components/prompt-playground';
+import { PromptLab } from '@/components/prompt-lab';
 import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -13,20 +13,32 @@ import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { MasteryOverview } from '@/features/progress/components/MasteryOverview';
 import { useUserProgress } from '@/features/progress/hooks/useUserProgress';
 import { LessonFinder } from '@/features/lessons/components/LessonFinder';
+import { PersonalizedPathCard } from '@/features/personalization/components/PersonalizedPathCard';
+import { usePersonalizedLearning } from '@/features/personalization/hooks/usePersonalizedLearning';
 import { RecommendationList } from '@/features/recommendations/components/RecommendationList';
 import { useRecommendations } from '@/features/recommendations/hooks/useRecommendations';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useLearning } from '@/hooks/use-learning';
+import { fetchNextPracticeLesson } from '@/services/lessons.service';
 
 export default function ExploreScreen() {
   const router = useRouter();
-  const { modules, practiceModule, totalLessons } = useLearning();
+  const { state } = useAuth();
+  const { modules, totalLessons } = useLearning();
   const { averageMastery } = useUserProgress();
   const { recommendations, refresh } = useRecommendations();
+  const {
+    profile,
+    insight,
+    loading: pathLoading,
+    refreshing: pathRefreshing,
+    refreshPath,
+  } = usePersonalizedLearning();
 
   useFocusEffect(
     useCallback(() => {
-      refresh();
-    }, [refresh]),
+      refreshPath().then(() => refresh());
+    }, [refresh, refreshPath]),
   );
 
   return (
@@ -60,6 +72,14 @@ export default function ExploreScreen() {
 
       <LessonFinder />
 
+      <PersonalizedPathCard
+        profile={profile}
+        insight={insight}
+        loading={pathLoading}
+        refreshing={pathRefreshing}
+        onRefresh={refreshPath}
+      />
+
       <View style={styles.moduleList}>
         {modules.map((module) => (
           <ModuleCard
@@ -71,7 +91,28 @@ export default function ExploreScreen() {
                 params: { moduleSlug: module.id },
               })
             }
-            onPractice={() => practiceModule(module.id)}
+            onPractice={async () => {
+              if (state.status === 'authenticated') {
+                const next = await fetchNextPracticeLesson(
+                  state.session.user.id,
+                  module.id,
+                );
+                if (next.ok && next.data) {
+                  router.push({
+                    pathname: '/lesson/practice',
+                    params: {
+                      lessonId: next.data.id,
+                      moduleSlug: module.id,
+                    },
+                  });
+                  return;
+                }
+              }
+              router.push({
+                pathname: '/lesson/[moduleSlug]',
+                params: { moduleSlug: module.id },
+              });
+            }}
           />
         ))}
       </View>
@@ -89,7 +130,7 @@ export default function ExploreScreen() {
       />
 
       <View style={styles.playgroundWrapper}>
-        <PromptPlayground />
+        <PromptLab />
       </View>
     </ScreenShell>
     </AuthGuard>

@@ -8,8 +8,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTheme } from '@/hooks/use-theme';
-import { fetchLessonsForModule } from '@/services/lessons.service';
+import { fetchLessonsForModule, fetchNextPracticeLesson } from '@/services/lessons.service';
 import type { DbLesson } from '@/types';
 
 export default function LessonScreen() {
@@ -19,6 +20,7 @@ export default function LessonScreen() {
   }>();
   const router = useRouter();
   const theme = useTheme();
+  const { state } = useAuth();
 
   const [lessons, setLessons] = useState<DbLesson[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -38,9 +40,18 @@ export default function LessonScreen() {
       if (lessonId) {
         const idx = result.data.findIndex((l) => l.id === lessonId);
         if (idx >= 0) setCurrentIndex(idx);
+        return;
+      }
+      if (state.status === 'authenticated' && moduleSlug) {
+        fetchNextPracticeLesson(state.session.user.id, moduleSlug).then((next) => {
+          if (next.ok && next.data) {
+            const idx = result.data.findIndex((l) => l.id === next.data!.id);
+            if (idx >= 0) setCurrentIndex(idx);
+          }
+        });
       }
     });
-  }, [moduleSlug, lessonId]);
+  }, [moduleSlug, lessonId, state.status === 'authenticated' && state.session?.user.id]);
 
   if (!moduleSlug) return null;
 

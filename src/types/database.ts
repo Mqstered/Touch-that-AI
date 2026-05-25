@@ -211,6 +211,41 @@ export type Database = {
         };
         Relationships: [];
       };
+      user_learner_profile: {
+        Row: {
+          user_id: string;
+          preferred_goal: string;
+          suggested_level: LessonLevel;
+          weak_skill: SkillType | null;
+          weak_criterion: string | null;
+          avg_score_10: number;
+          total_attempts: number;
+          insight_text: string | null;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          preferred_goal?: string;
+          suggested_level?: LessonLevel;
+          weak_skill?: SkillType | null;
+          weak_criterion?: string | null;
+          avg_score_10?: number;
+          total_attempts?: number;
+          insight_text?: string | null;
+          updated_at?: string;
+        };
+        Update: {
+          preferred_goal?: string;
+          suggested_level?: LessonLevel;
+          weak_skill?: SkillType | null;
+          weak_criterion?: string | null;
+          avg_score_10?: number;
+          total_attempts?: number;
+          insight_text?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       lesson_recommendations: {
         Row: {
           id: string;
@@ -275,6 +310,22 @@ export type Database = {
       recompute_recommendations: {
         Args: { p_user_id: string };
         Returns: void;
+      };
+      get_learner_behavior_summary: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
+      build_personalized_learning_path: {
+        Args: { p_user_id: string };
+        Returns: Json;
+      };
+      get_user_learner_profile: {
+        Args: { p_user_id: string };
+        Returns: Database['public']['Tables']['user_learner_profile']['Row'][];
+      };
+      refresh_learning_path: {
+        Args: Record<string, never>;
+        Returns: Json;
       };
     };
     Enums: {

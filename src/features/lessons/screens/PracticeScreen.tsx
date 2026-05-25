@@ -47,6 +47,12 @@ export default function PracticeScreen() {
 
   useEffect(() => {
     if (!lessonId) return;
+    setLoadingLesson(true);
+    setResponse('');
+    setValidationError(null);
+    startedAt.current = new Date().toISOString();
+    startMs.current = Date.now();
+
     fetchLessonById(lessonId).then((result) => {
       setLoadingLesson(false);
       if (!result.ok) { setFetchError(result.error); return; }
@@ -122,6 +128,7 @@ export default function PracticeScreen() {
       params: {
         lessonId: lesson.id,
         moduleSlug,
+        lessonTitle: lesson.title,
         total: String(scoreBreakdown.total),
         clarity: String(scoreBreakdown.clarity),
         context: String(scoreBreakdown.context),
@@ -140,7 +147,13 @@ export default function PracticeScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScreenShell>
-          {/* task */}
+          <ThemedText type="smallBold" style={styles.lessonTitle}>
+            {lesson.title}
+          </ThemedText>
+          <ThemedText type="small" themeColor="textSecondary" style={styles.lessonMeta}>
+            {lesson.moduleSlug} · {lesson.skill} · {lesson.level}
+          </ThemedText>
+
           <ThemedView type="backgroundElement" style={[styles.card, styles.taskCard]}>
             <ThemedText type="smallBold" style={styles.taskLabel}>
               Practice task
@@ -229,6 +242,13 @@ const styles = StyleSheet.create({
   taskCard: {
     borderLeftWidth: 3,
     borderLeftColor: '#9333ea',
+  },
+  lessonTitle: {
+    color: '#6b21a8',
+    marginBottom: Spacing.one,
+  },
+  lessonMeta: {
+    marginBottom: Spacing.three,
   },
   taskLabel: {
     color: '#7e22ce',
