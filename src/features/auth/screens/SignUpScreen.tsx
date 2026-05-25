@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -11,6 +11,7 @@ import {
     View,
 } from 'react-native';
 
+import { EyeIcon } from '@/components/eye-icon';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTheme } from '@/hooks/use-theme';
@@ -19,6 +20,8 @@ export default function SignUpScreen() {
   const { signUp } = useAuth();
   const router = useRouter();
   const theme = useTheme();
+  const passwordInputRef = useRef<TextInput>(null);
+  const confirmInputRef = useRef<TextInput>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -67,45 +70,47 @@ export default function SignUpScreen() {
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
+          onSubmitEditing={Platform.OS === 'web' ? () => passwordInputRef.current?.focus() : undefined}
+          blurOnSubmit={false}
           returnKeyType="next"
-          onSubmitEditing={() => {
-            // Focus on password field
-          }}
         />
 
-        <View style={[styles.inputContainer, { borderColor: theme.backgroundSelected }]}>
+        <View style={styles.passwordContainer}>
           <TextInput
-            style={[styles.input, { color: theme.text }]}
+            ref={passwordInputRef}
+            style={[styles.input, styles.passwordInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
             placeholder="Password"
             placeholderTextColor={theme.textSecondary}
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
+            onSubmitEditing={Platform.OS === 'web' ? () => confirmInputRef.current?.focus() : undefined}
+            blurOnSubmit={false}
             returnKeyType="next"
           />
-          <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Text style={[styles.eyeText, { color: theme.textSecondary }]}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Text>
-          </Pressable>
+          <EyeIcon 
+            visible={showPassword} 
+            onPress={() => setShowPassword(!showPassword)} 
+          />
         </View>
 
-        <View style={[styles.inputContainer, { borderColor: theme.backgroundSelected }]}>
+        <View style={styles.passwordContainer}>
           <TextInput
-            style={[styles.input, { color: theme.text }]}
+            ref={confirmInputRef}
+            style={[styles.input, styles.passwordInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
             placeholder="Confirm password"
             placeholderTextColor={theme.textSecondary}
             secureTextEntry={!showConfirm}
             value={confirm}
             onChangeText={setConfirm}
+            onSubmitEditing={Platform.OS === 'web' ? handleSignUp : undefined}
+            blurOnSubmit={true}
             returnKeyType="done"
-            onSubmitEditing={handleSignUp}
           />
-          <Pressable onPress={() => setShowConfirm(!showConfirm)} style={styles.eyeIcon}>
-            <Text style={[styles.eyeText, { color: theme.textSecondary }]}>
-              {showConfirm ? 'Hide' : 'Show'}
-            </Text>
-          </Pressable>
+          <EyeIcon 
+            visible={showConfirm} 
+            onPress={() => setShowConfirm(!showConfirm)} 
+          />
         </View>
 
         {error ? (
@@ -157,27 +162,21 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.five,
   },
   input: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: Spacing.three,
-    paddingHorizontal: Spacing.three,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     borderWidth: 1,
     borderRadius: Spacing.three,
+    paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.three,
+    fontSize: 16,
     marginBottom: Spacing.three,
   },
-  eyeIcon: {
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.three,
-    justifyContent: 'center',
+  passwordContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: Spacing.three,
   },
-  eyeText: {
-    fontSize: 16,
-    lineHeight: 20,
+  passwordInput: {
+    flex: 1,
+    marginRight: Spacing.one,
   },
   button: {
     paddingVertical: Spacing.three,

@@ -140,21 +140,6 @@ export default function LessonScreen() {
           ))}
         </View>
 
-        {/* Fixed lesson header */}
-        {lessons[currentIndex] && (
-          <View style={styles.fixedHeader}>
-            <ThemedText type="small" themeColor="textSecondary" style={styles.levelBadge}>
-              {lessons[currentIndex].level.toUpperCase()} · {lessons[currentIndex].skill}
-            </ThemedText>
-            <ThemedText type="title" style={styles.title}>
-              {lessons[currentIndex].title}
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.goal}>
-              Goal: {lessons[currentIndex].goal}
-            </ThemedText>
-          </View>
-        )}
-
         {/* Swipeable lesson content */}
         <SwipeableLessonCards
           lessons={lessons}
@@ -163,6 +148,19 @@ export default function LessonScreen() {
         >
           {(currentLesson: DbLesson, index: number) => (
             <View style={styles.lessonContent}>
+
+              {/* header */}
+              <View style={styles.header}>
+                <ThemedText type="small" themeColor="textSecondary" style={styles.levelBadge}>
+                  {currentLesson.level.toUpperCase()} · {currentLesson.skill}
+                </ThemedText>
+                <ThemedText type="title" style={styles.title}>
+                  {currentLesson.title}
+                </ThemedText>
+                <ThemedText type="subtitle" style={styles.goal}>
+                  Goal: {currentLesson.goal}
+                </ThemedText>
+              </View>
 
               {/* lesson body */}
               <ThemedView type="backgroundElement" style={styles.card}>
@@ -247,9 +245,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: Spacing.two,
     paddingBottom: Spacing.three,
-  },
-  fixedHeader: {
-    marginBottom: Spacing.four,
   },
   lessonContent: {
     flex: 1,

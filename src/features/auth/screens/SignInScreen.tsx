@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     ActivityIndicator,
     KeyboardAvoidingView,
@@ -11,6 +11,7 @@ import {
     View,
 } from 'react-native';
 
+import { EyeIcon } from '@/components/eye-icon';
 import { Spacing } from '@/constants/theme';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useTheme } from '@/hooks/use-theme';
@@ -19,6 +20,7 @@ export default function SignInScreen() {
   const { signIn } = useAuth();
   const router = useRouter();
   const theme = useTheme();
+  const passwordInputRef = useRef<TextInput>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -57,28 +59,28 @@ export default function SignInScreen() {
           keyboardType="email-address"
           value={email}
           onChangeText={setEmail}
+          onSubmitEditing={Platform.OS === 'web' ? () => passwordInputRef.current?.focus() : undefined}
+          blurOnSubmit={false}
           returnKeyType="next"
-          onSubmitEditing={() => {
-            // Focus on password field
-          }}
         />
 
-        <View style={[styles.inputContainer, { borderColor: theme.backgroundSelected }]}>
+        <View style={styles.passwordContainer}>
           <TextInput
-            style={[styles.input, { color: theme.text }]}
+            ref={passwordInputRef}
+            style={[styles.input, styles.passwordInput, { color: theme.text, borderColor: theme.backgroundSelected }]}
             placeholder="Password"
             placeholderTextColor={theme.textSecondary}
             secureTextEntry={!showPassword}
             value={password}
             onChangeText={setPassword}
+            onSubmitEditing={Platform.OS === 'web' ? handleSignIn : undefined}
+            blurOnSubmit={true}
             returnKeyType="done"
-            onSubmitEditing={handleSignIn}
           />
-          <Pressable onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
-            <Text style={[styles.eyeText, { color: theme.textSecondary }]}>
-              {showPassword ? 'Hide' : 'Show'}
-            </Text>
-          </Pressable>
+          <EyeIcon 
+            visible={showPassword} 
+            onPress={() => setShowPassword(!showPassword)} 
+          />
         </View>
 
         {error ? (
@@ -130,27 +132,21 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.five,
   },
   input: {
-    flex: 1,
-    fontSize: 16,
-    paddingVertical: Spacing.three,
-    paddingHorizontal: Spacing.three,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     borderWidth: 1,
     borderRadius: Spacing.three,
+    paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.three,
+    fontSize: 16,
     marginBottom: Spacing.three,
   },
-  eyeIcon: {
-    paddingHorizontal: Spacing.two,
-    paddingVertical: Spacing.three,
-    justifyContent: 'center',
+  passwordContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: Spacing.three,
   },
-  eyeText: {
-    fontSize: 16,
-    lineHeight: 20,
+  passwordInput: {
+    flex: 1,
+    marginRight: Spacing.one,
   },
   button: {
     paddingVertical: Spacing.three,
