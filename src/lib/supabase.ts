@@ -1,6 +1,7 @@
 import 'react-native-url-polyfill/auto';
 
 import { createClient } from '@supabase/supabase-js';
+import { Platform } from 'react-native';
 
 import type { Database } from '@/types/database';
 
@@ -18,6 +19,15 @@ if (__DEV__ && (!SUPABASE_URL || !SUPABASE_ANON_KEY)) {
   );
 }
 
+// Conditional storage adapter for cross-platform compatibility
+let storage: any = undefined;
+
+if (Platform.OS !== 'web') {
+  // Only import AsyncStorage on native platforms
+  const AsyncStorage = require('@react-native-async-storage/async-storage').default;
+  storage = AsyncStorage;
+}
+
 export const supabase = createClient<Database>(
   SUPABASE_URL,
   SUPABASE_ANON_KEY,
@@ -26,6 +36,7 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: false,
+      storage: Platform.OS !== 'web' ? storage : undefined,
     },
   }
 );
