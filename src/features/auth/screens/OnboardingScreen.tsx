@@ -7,7 +7,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  View,
+  View
 } from "react-native";
 
 import { useAuth } from "@/features/auth/hooks/useAuth";
@@ -37,6 +37,8 @@ export default function OnboardingScreen() {
   const particle3 = useRef(new Animated.Value(0)).current;
 
   const cursorOpacity = useRef(new Animated.Value(1)).current;
+
+  const logoFloat = useRef(new Animated.Value(0)).current;
 
   //------------------------------------------------
   // STATES
@@ -89,6 +91,32 @@ export default function OnboardingScreen() {
 
     return () => cursorLoop.stop();
   }, [cursorOpacity]);
+
+  //------------------------------------------------
+  // FLOATING LOGO
+  //------------------------------------------------
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(logoFloat, {
+          toValue: -12,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+
+        Animated.timing(logoFloat, {
+          toValue: 12,
+          duration: 2500,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+
+    loop.start();
+
+    return () => loop.stop();
+  }, [logoFloat]);
 
   //------------------------------------------------
   // FLOATING PARTICLES
@@ -195,61 +223,82 @@ export default function OnboardingScreen() {
         ]}
       />
 
-      {/* TITLE */}
+      {/* CONTENT */}
 
-      <Text style={styles.title}>uCornAi</Text>
+      <View style={styles.contentContainer}>
+        {/* LOGO */}
 
-      {/* TYPING TEXT */}
+        <View style={styles.logoWrapper}>
+          <View style={styles.logoGlow} />
 
-      <View style={styles.typingContainer}>
-        <Text style={styles.typingText}>{typedText}</Text>
+          <Animated.Image
+            source={require("../../../../assets/images/UcornLogo.png")}
+            style={[
+              styles.logo,
+              {
+                transform: [{ translateY: logoFloat }],
+              },
+            ]}
+            resizeMode="contain"
+          />
+        </View>
 
-        <Animated.Text
-          style={[
-            styles.cursor,
-            {
-              opacity: cursorOpacity,
-            },
-          ]}
+        {/* TITLE */}
+
+        <Text style={styles.title}>uCornAi</Text>
+
+        {/* TYPING TEXT */}
+
+        <View style={styles.typingContainer}>
+          <Text style={styles.typingText}>{typedText}</Text>
+
+          <Animated.Text
+            style={[
+              styles.cursor,
+              {
+                opacity: cursorOpacity,
+              },
+            ]}
+          >
+            |
+          </Animated.Text>
+        </View>
+
+        {/* BUTTON */}
+
+        <Pressable
+          onPress={handleCTA}
+          onHoverIn={startHoverAnimation}
+          onHoverOut={stopHoverAnimation}
+          onPressIn={startHoverAnimation}
+          onPressOut={stopHoverAnimation}
+          style={{
+            marginTop: 50,
+          }}
         >
-          |
-        </Animated.Text>
+          <Animated.View
+            style={[
+              styles.button,
+              hovered && styles.buttonHovered,
+              {
+                transform: [{ scale: scaleAnim }],
+              },
+            ]}
+          >
+            {state.status === "loading" ? (
+              <ActivityIndicator color="#fdf4ff" />
+            ) : (
+              <Text
+                style={[styles.buttonText, hovered && styles.buttonTextHovered]}
+              >
+                {state.status === "authenticated"
+                  ? "Continue"
+                  : "Ready to Touch"}
+              </Text>
+            )}
+          </Animated.View>
+        </Pressable>
       </View>
-
-      {/* BUTTON */}
-
-      <Pressable
-        onPress={handleCTA}
-        onHoverIn={startHoverAnimation}
-        onHoverOut={stopHoverAnimation}
-        onPressIn={startHoverAnimation}
-        onPressOut={stopHoverAnimation}
-        style={{
-          marginTop: 50,
-        }}
-      >
-        <Animated.View
-          style={[
-            styles.button,
-
-            hovered && styles.buttonHovered,
-
-            {
-              transform: [{ scale: scaleAnim }],
-            },
-          ]}
-        >
-          {state.status === "loading" ? (
-            <ActivityIndicator color="#fdf4ff" />
-          ) : (
-            <Text
-              style={[styles.buttonText, hovered && styles.buttonTextHovered]}
-            >
-              {state.status === "authenticated" ? "Continue" : "Ready to Touch"}
-            </Text>
-          )}
-        </Animated.View>
-      </Pressable>
     </View>
   );
 }
@@ -276,13 +325,78 @@ const styles = StyleSheet.create({
   },
 
   //------------------------------------------------
+  // CONTENT
+  //------------------------------------------------
+
+  contentContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 2,
+  },
+
+  //------------------------------------------------
+  // LOGO WRAPPER
+  //------------------------------------------------
+
+  logoWrapper: {
+    position: "relative",
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    marginBottom: 10,
+  },
+
+  logoGlow: {
+    position: "absolute",
+
+    width: 260,
+    height: 260,
+
+    borderRadius: 999,
+
+    backgroundColor: "rgba(217,70,239,0.18)",
+
+    shadowColor: "#d946ef",
+    shadowOpacity: 0.8,
+    shadowRadius: 60,
+
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+
+    elevation: 30,
+  },
+
+  //------------------------------------------------
+  // LOGO
+  //------------------------------------------------
+
+  logo: {
+    width: 320,
+    height: 320,
+
+    zIndex: 2,
+
+    shadowColor: "#ffffff",
+    shadowOpacity: 0.45,
+    shadowRadius: 25,
+
+    shadowOffset: {
+      width: 0,
+      height: 0,
+    },
+  },
+
+  //------------------------------------------------
   // TITLE
   //------------------------------------------------
 
   title: {
-    fontSize: 48,
+    fontSize: 54,
 
-    fontWeight: "700",
+    fontWeight: "900",
 
     color: "#6b21a8",
 
@@ -290,8 +404,10 @@ const styles = StyleSheet.create({
 
     marginBottom: 16,
 
-    textShadowColor: "rgba(107, 33, 168, 0.3)",
-    textShadowRadius: 10,
+    letterSpacing: -2,
+
+    textShadowColor: "rgba(147,51,234,0.35)",
+    textShadowRadius: 18,
   },
 
   //------------------------------------------------
@@ -301,9 +417,11 @@ const styles = StyleSheet.create({
   typingContainer: {
     flexDirection: "row",
 
-    marginTop: 30,
+    marginTop: 10,
 
     alignItems: "center",
+
+    justifyContent: "center",
   },
 
   typingText: {
@@ -312,6 +430,8 @@ const styles = StyleSheet.create({
     color: "#f236c6",
 
     fontWeight: "600",
+
+    textAlign: "center",
   },
 
   cursor: {
