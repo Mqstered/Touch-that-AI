@@ -1,5 +1,13 @@
-import React, { useContext } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import React, { useContext, useRef, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Animated,
+  Alert,
+} from "react-native";
 import { PlaytestContext } from "./_layout";
 
 export default function PlaytestDetails() {
@@ -10,6 +18,40 @@ export default function PlaytestDetails() {
     feedback,
     improvedPrompt,
   } = useContext(PlaytestContext);
+
+  const fade = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (improvedPrompt && improvedPrompt.length > 0) {
+      Animated.timing(fade, { toValue: 1, duration: 400, useNativeDriver: true }).start();
+    } else {
+      fade.setValue(0);
+    }
+  }, [improvedPrompt, fade]);
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (typeof navigator !== "undefined" && (navigator as any).clipboard?.writeText) {
+        await (navigator as any).clipboard.writeText(text);
+        Alert.alert("Copied", "Upgraded prompt copied to clipboard.");
+        return;
+      }
+
+      // Try dynamic import of expo-clipboard if available
+      try {
+        const Clipboard = await import("expo-clipboard");
+        await Clipboard.setStringAsync(text);
+        Alert.alert("Copied", "Upgraded prompt copied to clipboard.");
+        return;
+      } catch (e) {
+        // fallthrough
+      }
+
+      Alert.alert("Copy not available", "Please long-press the upgraded prompt to copy.");
+    } catch (e) {
+      Alert.alert("Copy failed", "Unable to copy to clipboard.");
+    }
+  };
 
   return (
     <ScrollView
@@ -42,10 +84,16 @@ export default function PlaytestDetails() {
       )}
 
       {improvedPrompt !== "" && (
-        <View style={[styles.card, styles.highlightCard]}>
+        <Animated.View style={[styles.card, styles.highlightCard, { opacity: fade }]}> 
           <Text style={styles.sectionTitle}>PROMPT UPGRADED</Text>
           <Text style={styles.bodyText}>{improvedPrompt}</Text>
-        </View>
+
+          <View style={{ marginTop: 12, flexDirection: "row", justifyContent: "flex-end" }}>
+            <TouchableOpacity onPress={() => copyToClipboard(improvedPrompt)} style={styles.copyButton}>
+              <Text style={{ color: "#6b21a8", fontWeight: "700" }}>Copy</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
       )}
     </ScrollView>
   );
@@ -104,4 +152,12 @@ const styles = StyleSheet.create({
   },
 
   buttonText: { color: "white", fontSize: 18, fontWeight: "700" },
+  copyButton: {
+    backgroundColor: "rgba(147,51,234,0.08)",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "rgba(147,51,234,0.12)",
+  },
 });

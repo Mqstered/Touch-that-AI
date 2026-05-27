@@ -1,10 +1,35 @@
-import React, { useContext } from "react";
-import { Link } from "expo-router";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import React, { useContext, useRef, useState, useEffect } from "react";
+import { useRouter } from "expo-router";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Pressable,
+  Animated,
+  TouchableOpacity,
+} from "react-native";
 import { PlaytestContext } from "./_layout";
 
 export default function PlaytestLanding() {
-  const { prompt, analyzeLive, score, specificity } = useContext(PlaytestContext);
+  const { prompt, analyzeLive, score, specificity, setPrompt } = useContext(PlaytestContext);
+  const router = useRouter();
+
+  const ctaScale = useRef(new Animated.Value(1)).current;
+  const [showTip, setShowTip] = useState(true);
+
+  useEffect(() => {
+    setShowTip(prompt.trim().length === 0);
+  }, [prompt]);
+
+  const pressIn = () => Animated.spring(ctaScale, { toValue: 0.96, useNativeDriver: true }).start();
+  const pressOut = () => Animated.spring(ctaScale, { toValue: 1, useNativeDriver: true }).start();
+
+  const examples = [
+    "Create a 2-hour study plan for biology with breaks.",
+    "Write 5 cozy cafe captions for college students.",
+    "Explain global warming simply with 3 examples.",
+  ];
 
   return (
     <View style={styles.container}>
@@ -21,14 +46,36 @@ export default function PlaytestLanding() {
         style={styles.input}
       />
 
+      {showTip && (
+        <View style={styles.tipsRow}>
+          <Text style={styles.tipLabel}>Starter prompts:</Text>
+          {examples.map((ex) => (
+            <TouchableOpacity
+              key={ex}
+              onPress={() => setPrompt(ex)}
+              style={styles.tipChip}
+            >
+              <Text style={styles.tipText}>{ex}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       <View style={styles.analysisCard}>
         <Text style={styles.analysisLabel}>Prompt Clarity: {score}%</Text>
         <Text style={styles.analysisSub}>Specificity: {specificity}</Text>
       </View>
 
-      <Link href="/playtest/details" style={styles.cta}>
-        <Text style={styles.ctaText}>See detailed feedback</Text>
-      </Link>
+      <Pressable
+        onPressIn={pressIn}
+        onPressOut={pressOut}
+        onPress={() => router.push("/playtest/details")}
+        style={({ pressed }) => [styles.cta, pressed && { opacity: 0.95 }]}
+      >
+        <Animated.View style={{ transform: [{ scale: ctaScale }] }}>
+          <Text style={styles.ctaText}>See detailed feedback</Text>
+        </Animated.View>
+      </Pressable>
     </View>
   );
 }
@@ -64,6 +111,30 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     borderWidth: 1,
     borderColor: "#e9d5ff",
+  },
+
+  tipsRow: {
+    marginBottom: 18,
+  },
+
+  tipLabel: {
+    color: "#6b21a8",
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  tipChip: {
+    backgroundColor: "#fff",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: "#e9d5ff",
+  },
+
+  tipText: {
+    color: "#6b21a8",
   },
 
   analysisCard: {
