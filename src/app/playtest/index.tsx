@@ -1,13 +1,13 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Pressable,
-  Animated,
-  TouchableOpacity,
+    Animated,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { PlaytestContext } from "./_layout";
 
