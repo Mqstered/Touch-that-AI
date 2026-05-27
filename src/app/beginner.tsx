@@ -5,7 +5,7 @@ export default function BeginnerScreen() {
     <View
       style={{
         flex: 1,
-        backgroundColor: "#000",
+        backgroundColor: "#000000",
         padding: 24,
         justifyContent: "center",
       }}
