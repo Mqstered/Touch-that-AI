@@ -1,6 +1,5 @@
-import React, { createContext, useState } from "react";
 import { Slot } from "expo-router";
-import { View } from "react-native";
+import React, { createContext, useState } from "react";
 
 type PlaytestContextType = {
   prompt: string;

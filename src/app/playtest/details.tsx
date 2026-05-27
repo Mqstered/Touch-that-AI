@@ -1,12 +1,12 @@
-import React, { useContext, useRef, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Animated,
-  Alert,
+    Alert,
+    Animated,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { PlaytestContext } from "./_layout";
 
