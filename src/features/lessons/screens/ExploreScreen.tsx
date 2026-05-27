@@ -148,63 +148,96 @@ const styles = StyleSheet.create({
     position: "relative",
     zIndex: 2,
   },
+
   title: {
     marginBottom: Spacing.two,
-    color: "#c493f9",
-    textShadowColor: "rgba(168, 85, 247, 0.5)",
-    textShadowRadius: 16,
+
+    color: "#7e22ce",
+
+    textShadowColor: "rgba(192,132,252,0.45)",
+    textShadowRadius: 18,
   },
+
   subtitle: {
     maxWidth: 760,
     lineHeight: 36,
-    color: "#f9a8d4",
+
+    color: "#c026d3",
   },
+
   introCard: {
     width: "100%",
-    borderRadius: 28,
+
+    borderRadius: 32,
+
     padding: Spacing.four,
+
     marginBottom: Spacing.five,
-    backgroundColor: "rgba(30, 30, 40, 0.95)",
+
+    backgroundColor: "rgba(232, 204, 255, 0.88)",
+
     borderWidth: 1,
-    borderColor: "rgba(168, 85, 247, 0.3)",
-    shadowColor: "#9333ea",
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 6 },
+    borderColor: "#6B21A8",
+
+    shadowColor: "#c084fc",
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+
     elevation: 10,
   },
+
   cardHeading: {
-    color: "#e9d5ff",
+    color: "#7e22ce",
   },
+
   cardText: {
     marginTop: Spacing.two,
-    lineHeight: 24,
-    color: "#d8b4fe",
+
+    lineHeight: 26,
+
+    color: "#a21caf",
   },
+
   moduleList: {
     width: "100%",
     marginBottom: Spacing.five,
     zIndex: 2,
   },
+
   playgroundWrapper: {
     width: "100%",
     zIndex: 2,
   },
+
   backgroundGlowLarge: {
     position: "absolute",
+
     width: 370,
     height: 370,
+
     borderRadius: 999,
-    backgroundColor: "rgba(152, 41, 255, 0.12)",
+
+    backgroundColor: "rgba(168,85,247,0.12)",
+
     top: 40,
     right: -120,
   },
+
   backgroundGlowSmall: {
     position: "absolute",
+
     width: 220,
     height: 220,
+
     borderRadius: 999,
-    backgroundColor: "rgba(219,39,119,0.2)",
+
+    backgroundColor: "rgba(236,72,153,0.14)",
+
     bottom: 80,
     left: -80,
   },

@@ -1,71 +1,49 @@
-import { useRouter } from 'expo-router';
-import React from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import React from "react";
+import { Pressable, StyleSheet, Text } from "react-native";
 
-import { ThemedText } from '@/components/themed-text';
-import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+type Props = {
+  onPress: () => void;
+};
 
-interface BackButtonProps {
-  onPress?: () => void;
-  themeColor?: 'text' | 'textSecondary';
-  size?: 'small' | 'medium';
-  showText?: boolean;
-  text?: string;
-}
-
-export function BackButton({ 
-  onPress, 
-  themeColor = 'text', 
-  size = 'medium',
-  showText = true,
-  text = 'Back'
-}: BackButtonProps) {
-  const router = useRouter();
-  const theme = useTheme();
-
-  const handlePress = () => {
-    if (onPress) {
-      onPress();
-    } else {
-      router.back();
-    }
-  };
-
-  const fontSize = size === 'small' ? 14 : 16;
-  const padding = size === 'small' ? Spacing.one : Spacing.two;
-
+export function BackButton({ onPress }: Props) {
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.container,
-        { 
-          opacity: pressed ? 0.7 : 1,
-          padding,
-        }
-      ]}
-      onPress={handlePress}
-    >
-      <ThemedText 
-        type="small" 
-        themeColor={themeColor}
-        style={[styles.text, { fontSize }]}
-      >
-        ← {showText ? text : ''}
-      </ThemedText>
+    <Pressable onPress={onPress} style={styles.button}>
+      <Text style={styles.arrow}>←</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'flex-start',
-    borderRadius: 8,
-    minWidth: 60,
+  button: {
+    width: 54,
+    height: 54,
+
+    borderRadius: 18,
+
+    backgroundColor: "#ffffff",
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    borderWidth: 1,
+    borderColor: "#d8b4fe",
+
+    shadowColor: "#9333ea",
+
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+
+    elevation: 6,
   },
-  text: {
-    fontWeight: '500',
+
+  arrow: {
+    fontSize: 28,
+    color: "#7e22ce",
+    fontWeight: "900",
   },
 });

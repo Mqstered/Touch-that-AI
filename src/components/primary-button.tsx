@@ -1,58 +1,102 @@
-import React from 'react';
-import { Pressable, StyleSheet, type PressableProps } from 'react-native';
+import React from "react";
+import { Pressable, StyleSheet, Text, ViewStyle } from "react-native";
 
-import { ThemedText } from '@/components/themed-text';
-import { useTheme } from '@/hooks/use-theme';
-import { Spacing } from '@/constants/theme';
-
-type PrimaryButtonProps = PressableProps & {
+type Props = {
   title: string;
+  onPress: () => void;
+  style?: ViewStyle;
 };
 
-export function PrimaryButton({ title, style, ...props }: PrimaryButtonProps) {
-  const theme = useTheme();
+export function PrimaryButton({ title, onPress, style }: Props) {
+  const isPrevious = title === "Previous";
 
   return (
     <Pressable
-      // style={({ pressed }) => [
-      //   styles.button,
-      //   { backgroundColor: theme.backgroundSelected, opacity: pressed ? 0.92 : 1 },
-      //   style,
-      // ]}
-      {...props}
-            style={(state) => {
-        const resolvedStyle =
-          typeof style === 'function'
-            ? style(state)
-            : style;
-
-        return [
-          styles.button,
-          {
-            backgroundColor: theme.backgroundSelected,
-            opacity: state.pressed ? 0.92 : 1,
-          },
-          resolvedStyle,
-        ];
-      }}
-
+      onPress={onPress}
+      style={[
+        styles.button,
+        isPrevious ? styles.previousButton : styles.nextButton,
+        style,
+      ]}
     >
-      <ThemedText type="smallBold" style={styles.buttonText}>
+      <Text
+        style={[
+          styles.text,
+          isPrevious ? styles.previousText : styles.nextText,
+        ]}
+      >
         {title}
-      </ThemedText>
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
+  //------------------------------------------------
+  // BASE
+  //------------------------------------------------
+
   button: {
-    paddingVertical: Spacing.three,
-    paddingHorizontal: Spacing.four,
-    borderRadius: Spacing.three,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: 62,
+    borderRadius: 22,
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    paddingHorizontal: 24,
+
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+
+    elevation: 8,
   },
-  buttonText: {
-    letterSpacing: 0.5,
+
+  //------------------------------------------------
+  // NEXT BUTTON
+  //------------------------------------------------
+
+  nextButton: {
+    backgroundColor: "#9333ea",
+
+    borderWidth: 1,
+    borderColor: "#c084fc",
+
+    shadowColor: "#9333ea",
+  },
+
+  nextText: {
+    color: "#ffffff",
+  },
+
+  //------------------------------------------------
+  // PREVIOUS BUTTON
+  //------------------------------------------------
+
+  previousButton: {
+    backgroundColor: "#f3e8ff",
+
+    borderWidth: 1,
+    borderColor: "#d8b4fe",
+
+    shadowColor: "#c084fc",
+  },
+
+  previousText: {
+    color: "#6b21a8",
+  },
+
+  //------------------------------------------------
+  // TEXT
+  //------------------------------------------------
+
+  text: {
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: 0.3,
   },
 });
