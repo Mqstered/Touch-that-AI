@@ -38,35 +38,39 @@ Deno.serve(async (req) => {
   if (body.mode === "compare") {
     const weak = body.weakPrompt?.trim() ?? "Plan my day.";
     const strong = body.strongPrompt?.trim() ??
-      "Plan my day. I work 9–6, want 30 min exercise, 1 hr study. Give a table.";
+    "Plan my day. I work 9–6, want 30 min exercise, 1 hr study. Give a table.";
 
     const weakSystem =
-      "Respond briefly to this vague prompt as a generic AI would. Under 70 words.";
-    const strongSystem =
-      "Respond helpfully to this well-structured prompt. Follow their format. Under 100 words.";
+    "Respond briefly to this vague prompt as a generic AI would. Under 70 words.";
+   const strongSystem =
+    "Respond helpfully to this well-structured prompt. Follow their format. Under 100 words.";
 
     const [weakRes, strongRes] = await Promise.all([
-      callGemini(apiKey, weakSystem, weak, 120),
-      callGemini(apiKey, strongSystem, strong, 150),
+    callGemini(apiKey, weakSystem, weak, 120),
+    callGemini(apiKey, strongSystem, strong, 150),
     ]);
 
-    if (!weakRes.ok && !strongRes.ok) {
-      return json({
-        weakText: null,
-        strongText: null,
-        error: `Gemini failed: ${weakRes.error}`,
-      }, 200);
+    // DEBUG: Log what Gemini actually returned
+   console.log("WEAK RESPONSE:", JSON.stringify(weakRes, null, 2));
+    console.log("STRONG RESPONSE:", JSON.stringify(strongRes, null, 2));
+
+   if (!weakRes.ok && !strongRes.ok) {
+    return json({
+      weakText: null,
+      strongText: null,
+      error: `Gemini failed: ${weakRes.error}`,
+    }, 200);
     }
 
     return json({
-      weakText: weakRes.ok ? weakRes.text : `Could not generate (${weakRes.error})`,
-      strongText: strongRes.ok
-        ? strongRes.text
-        : `Could not generate (${strongRes.error})`,
-      comparisonTip: strongRes.ok && weakRes.ok
-        ? "Notice how the stronger prompt adds context, constraints, and output format — that is what you are training in this app."
-        : null,
-    }, 200);
+    weakText: weakRes.ok ? weakRes.text : `Could not generate (${weakRes.error})`,
+    strongText: strongRes.ok
+      ? strongRes.text
+      : `Could not generate (${strongRes.error})`,
+    comparisonTip: strongRes.ok && weakRes.ok
+      ? "Notice how the stronger prompt adds context, constraints, and output format — that is what you are training in this app."
+      : null,
+   }, 200);
   }
 
   const userPrompt = body.prompt?.trim();
