@@ -41,13 +41,13 @@ Deno.serve(async (req) => {
     "Plan my day. I work 9–6, want 30 min exercise, 1 hr study. Give a table.";
 
     const weakSystem =
-    "Respond briefly to this vague prompt as a generic AI would. Under 70 words.";
+    "Respond briefly to this vague prompt as a generic AI would. Under 70 words. Give only the main response as raw text, without any preface or explanation or formatting.";
    const strongSystem =
-    "Respond helpfully to this well-structured prompt. Follow their format. Under 100 words.";
+    "Respond helpfully to this well-structured prompt. Follow their format. Under 100 words. Give only the main response as raw text, without any preface or explanation or formatting.";
 
     const [weakRes, strongRes] = await Promise.all([
-    callGemini(apiKey, weakSystem, weak, 120),
-    callGemini(apiKey, strongSystem, strong, 150),
+    callGemini(apiKey, weakSystem, weak, 500),
+    callGemini(apiKey, strongSystem, strong, 2000),
     ]);
 
     // DEBUG: Log what Gemini actually returned

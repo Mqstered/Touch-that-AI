@@ -14,7 +14,7 @@ export async function callGemini(
   apiKey: string,
   systemInstruction: string,
   userText: string,
-  maxTokens = 200,
+  maxTokens = 500,
 ): Promise<GeminiResult> {
   const trimmed = userText.trim().slice(0, 2000);
   if (!trimmed) {
@@ -54,7 +54,14 @@ export async function callGemini(
       }
 
       const data = await res.json();
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      //const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+      const parts = data?.candidates?.[0]?.content?.parts;
+      const text = parts?.map(p => p?.text).join('').trim();
+      // const text = parts
+      //   ?.filter(p => typeof p?.text === "string")
+      //   .map(p => p.text)
+      //   .join("")
+      //   .trim();
 
       if (text) {
         return { ok: true, text, model };
@@ -86,8 +93,9 @@ export async function callGemini(
         });
         if (res2.ok) {
           const data2 = await res2.json();
-          const text2 = data2?.candidates?.[0]?.content?.parts?.[0]?.text
-            ?.trim();
+          //const text2 = data2?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+          const parts2 = data2?.candidates?.[0]?.content?.parts;
+          const text2 = parts2?.map(p => p?.text).join('').trim();
           if (text2) return { ok: true, text: text2, model: `${model}-fallback` };
         }
       } catch {
