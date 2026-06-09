@@ -24,7 +24,7 @@ export function MasteryOverview({
           {averageMastery}%
         </ThemedText>
       </View>
-      <ProgressBar value={averageMastery} style={styles.bar} />
+      <ProgressBar value={averageMastery} style={styles.bar} trackColor="rgba(255,255,255,0.7)" fillColor="#a855f7" />
       <ThemedText type="small" style={{ color: "#a21caf" }}>
         {totalLessons} lessons available
       </ThemedText>

@@ -24,18 +24,18 @@ export function ModuleCard({ module, progress, onPress, onPractice }: ModuleCard
     <View style={styles.card}>
       <Pressable onPress={onPress} style={styles.pressable}>
         <View style={styles.header}>
-          <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>{module.title}</ThemedText>
-          <ThemedText type="small" style={{ color: '#d8b4fe' }}>
+          <ThemedText type="smallBold" style={{ color: '#7e22ce' }}>{module.title}</ThemedText>
+          <ThemedText type="small" style={{ color: '#a21caf' }}>
             {module.category}
           </ThemedText>
         </View>
-        <ThemedText type="default" style={[styles.description, { color: '#f9a8d4' }]}>
+        <ThemedText type="default" style={[styles.description, { color: '#9333ea' }]}>
           {module.subtitle}
         </ThemedText>
 
         <View style={styles.progressRow}>
-          <ProgressBar value={progressPercentage} style={styles.progress} />
-          <ThemedText type="smallBold" style={{ color: '#e9d5ff' }}>{progressPercentage}%</ThemedText>
+          <ProgressBar value={progressPercentage} style={styles.progress} trackColor="rgba(255,255,255,0.7)" fillColor="#a855f7" />
+          <ThemedText type="smallBold" style={{ color: '#7e22ce' }}>{progressPercentage}%</ThemedText>
         </View>
       </Pressable>
 
@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.four,
     padding: Spacing.four,
     marginBottom: Spacing.three,
-    backgroundColor: 'rgba(30, 30, 40, 0.95)',
+    backgroundColor: 'rgba(232, 204, 255, 0.88)',
     borderWidth: 1,
-    borderColor: 'rgba(168, 85, 247, 0.3)',
-    shadowColor: '#9333ea',
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 8,
+    borderColor: '#6B21A8',
+    shadowColor: '#c084fc',
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   pressable: {
     marginBottom: Spacing.three,
