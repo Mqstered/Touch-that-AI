@@ -1,19 +1,18 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  TextInput,
-  View,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    TextInput,
+    View,
 } from 'react-native';
 
 import { BackButton } from '@/components/back-button';
 import { PrimaryButton } from '@/components/primary-button';
 import { ScreenShell } from '@/components/screen-shell';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { AuthGuard } from '@/features/auth/components/AuthGuard';
 import { useAuth } from '@/features/auth/hooks/useAuth';
@@ -23,6 +22,19 @@ import { fetchEnhancedFeedback } from '@/services/ai.service';
 import { fetchLessonById } from '@/services/lessons.service';
 import { savePracticeAttempt } from '@/services/practice.service';
 import type { DbLesson, ScoredAttempt } from '@/types';
+
+const PurpleTheme = {
+  cardBg: 'rgba(232, 204, 255, 0.88)',
+  cardBorder: '#6B21A8',
+  inputBg: 'rgba(255, 255, 255, 0.9)',
+  inputBorder: '#c084fc',
+  inputBorderError: '#ef4444',
+  textPrimary: '#7e22ce',
+  textSecondary: '#a21caf',
+  textDark: '#581c87',
+  accent: '#9333ea',
+  placeholder: '#a855f7',
+};
 
 const MIN_CHARS = 20;
 
@@ -154,19 +166,21 @@ export default function PracticeScreen() {
           <ThemedText type="smallBold" style={styles.lessonTitle}>
             {lesson.title}
           </ThemedText>
-          <ThemedText type="small" themeColor="textSecondary" style={styles.lessonMeta}>
+          <ThemedText type="small" style={styles.lessonMeta}>
             {lesson.moduleSlug} · {lesson.skill} · {lesson.level}
           </ThemedText>
 
-          <ThemedView type="backgroundElement" style={[styles.card, styles.taskCard]}>
+          <View style={[styles.card, styles.taskCard]}>
             <ThemedText type="smallBold" style={styles.taskLabel}>
               Practice task
             </ThemedText>
-            <ThemedText type="default">{lesson.practiceTask}</ThemedText>
-          </ThemedView>
+            <ThemedText type="default" style={{ color: PurpleTheme.textDark }}>
+              {lesson.practiceTask}
+            </ThemedText>
+          </View>
 
           {/* reminder of goal */}
-          <ThemedText type="small" themeColor="textSecondary" style={styles.hint}>
+          <ThemedText type="small" style={styles.hint}>
             Write a prompt that addresses this task clearly. Think about: context, constraints,
             output format, and safety.
           </ThemedText>
@@ -176,13 +190,13 @@ export default function PracticeScreen() {
             style={[
               styles.input,
               {
-                color: theme.text,
-                backgroundColor: theme.backgroundElement,
-                borderColor: validationError ? '#ef4444' : theme.backgroundSelected,
+                color: PurpleTheme.textDark,
+                backgroundColor: PurpleTheme.inputBg,
+                borderColor: validationError ? PurpleTheme.inputBorderError : PurpleTheme.inputBorder,
               },
             ]}
             placeholder="Write your prompt here…"
-            placeholderTextColor={theme.textSecondary}
+            placeholderTextColor={PurpleTheme.placeholder}
             multiline
             value={response}
             onChangeText={setResponse}
@@ -191,7 +205,7 @@ export default function PracticeScreen() {
           />
 
           <View style={styles.charRow}>
-            <ThemedText type="small" themeColor="textSecondary">
+            <ThemedText type="small" style={{ color: PurpleTheme.textSecondary }}>
               {response.trim().length} characters
             </ThemedText>
           </View>
@@ -239,28 +253,38 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '100%',
-    borderRadius: Spacing.three,
+    borderRadius: Spacing.four,
     padding: Spacing.four,
     marginBottom: Spacing.three,
+    backgroundColor: PurpleTheme.cardBg,
+    borderWidth: 1,
+    borderColor: PurpleTheme.cardBorder,
+    shadowColor: '#c084fc',
+    shadowOpacity: 0.18,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   taskCard: {
     borderLeftWidth: 3,
-    borderLeftColor: '#9333ea',
+    borderLeftColor: PurpleTheme.accent,
   },
   lessonTitle: {
-    color: '#6b21a8',
+    color: PurpleTheme.textPrimary,
     marginBottom: Spacing.one,
   },
   lessonMeta: {
     marginBottom: Spacing.three,
+    color: PurpleTheme.textSecondary,
   },
   taskLabel: {
-    color: '#7e22ce',
+    color: PurpleTheme.textPrimary,
     marginBottom: Spacing.two,
   },
   hint: {
     marginBottom: Spacing.three,
     lineHeight: 20,
+    color: PurpleTheme.textSecondary,
   },
   input: {
     width: '100%',
@@ -277,7 +301,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.two,
   },
   errorText: {
-    color: '#ef4444',
+    color: '#dc2626',
     marginBottom: Spacing.two,
   },
   actions: {
@@ -285,12 +309,15 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.two,
     width: '100%',
+    justifyContent: 'space-between',
   },
   cancelBtn: {
     flex: 1,
+    maxWidth: '48%',
   },
   submitBtn: {
-    flex: 2,
+    flex: 1,
+    maxWidth: '48%',
   },
   scoringRow: {
     flexDirection: 'row',

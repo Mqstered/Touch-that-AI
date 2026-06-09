@@ -1,12 +1,12 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
-  Animated,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+    ActivityIndicator,
+    Animated,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
 
 import { BackButton } from "@/components/back-button";
@@ -18,8 +18,8 @@ import { Spacing } from "@/constants/theme";
 import { AuthGuard } from "@/features/auth/components/AuthGuard";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
-  fetchLessonsForModule,
-  fetchNextPracticeLesson,
+    fetchLessonsForModule,
+    fetchNextPracticeLesson,
 } from "@/services/lessons.service";
 import type { DbLesson } from "@/types";
 
@@ -560,14 +560,17 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.three,
     width: "100%",
+    justifyContent: "space-between",
   },
 
   secondaryBtn: {
     flex: 1,
+    maxWidth: "48%",
   },
 
   primaryBtn: {
     flex: 1,
+    maxWidth: "48%",
   },
 
   highlightedButton: {

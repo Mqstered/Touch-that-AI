@@ -94,7 +94,7 @@ export default function ScoreScreen() {
           <ThemedText type="subtitle" style={styles.headline}>
             {headline}
           </ThemedText>
-          <ProgressBar value={pct} style={styles.heroBar} />
+          <ProgressBar value={pct} style={styles.heroBar} trackColor="rgba(255,255,255,0.7)" fillColor="#a855f7" />
         </View>
 
         {/* per-criterion breakdown */}
@@ -116,7 +116,7 @@ export default function ScoreScreen() {
                   >
                     {s}/2
                   </ThemedText>
-                  <ProgressBar value={(s / 2) * 100} style={styles.criterionBar} />
+                  <ProgressBar value={(s / 2) * 100} style={styles.criterionBar} trackColor="rgba(255,255,255,0.7)" fillColor="#a855f7" />
                 </View>
               </View>
             );
@@ -245,11 +245,14 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.two,
     width: '100%',
+    justifyContent: 'space-between',
   },
   secondaryBtn: {
     flex: 1,
+    maxWidth: '48%',
   },
   primaryBtn: {
-    flex: 2,
+    flex: 1,
+    maxWidth: '48%',
   },
 });
