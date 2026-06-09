@@ -5,20 +5,17 @@ type Props = {
   title: string;
   onPress: () => void;
   style?: ViewStyle;
-  disabled?: boolean;
 };
 
-export function PrimaryButton({ title, onPress, style, disabled }: Props) {
+export function PrimaryButton({ title, onPress, style }: Props) {
   const isPrevious = title === "Previous";
 
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled}
       style={[
         styles.button,
         isPrevious ? styles.previousButton : styles.nextButton,
-        disabled && styles.disabledButton,
         style,
       ]}
     >
@@ -101,13 +98,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.3,
-  },
-
-  //------------------------------------------------
-  // DISABLED
-  //------------------------------------------------
-
-  disabledButton: {
-    opacity: 0.5,
   },
 });

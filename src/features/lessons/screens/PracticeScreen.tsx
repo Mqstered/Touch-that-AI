@@ -225,7 +225,6 @@ export default function PracticeScreen() {
             <PrimaryButton
               title={submitting ? 'Scoring…' : 'Submit'}
               onPress={handleSubmit}
-              disabled={submitting}
               style={styles.submitBtn}
             />
           </View>
@@ -309,15 +308,12 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.two,
     width: '100%',
-    justifyContent: 'space-between',
   },
   cancelBtn: {
     flex: 1,
-    maxWidth: '48%',
   },
   submitBtn: {
-    flex: 1,
-    maxWidth: '48%',
+    flex: 2,
   },
   scoringRow: {
     flexDirection: 'row',

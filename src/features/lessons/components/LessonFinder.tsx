@@ -104,7 +104,6 @@ export function LessonFinder() {
       <PrimaryButton
         title={loading ? 'Finding…' : 'Find lesson'}
         onPress={handleFind}
-        disabled={loading}
         style={styles.button}
       />
 

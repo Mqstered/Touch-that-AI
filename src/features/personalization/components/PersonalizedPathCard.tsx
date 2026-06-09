@@ -87,7 +87,6 @@ export function PersonalizedPathCard({
       <PrimaryButton
         title={refreshing ? "Updating path…" : "Refresh my path"}
         onPress={onRefresh}
-        disabled={refreshing}
         style={styles.refreshBtn}
       />
     </ThemedView>

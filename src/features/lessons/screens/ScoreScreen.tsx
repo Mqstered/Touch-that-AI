@@ -245,14 +245,11 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
     marginTop: Spacing.two,
     width: '100%',
-    justifyContent: 'space-between',
   },
   secondaryBtn: {
     flex: 1,
-    maxWidth: '48%',
   },
   primaryBtn: {
-    flex: 1,
-    maxWidth: '48%',
+    flex: 2,
   },
 });
