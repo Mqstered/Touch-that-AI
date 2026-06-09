@@ -311,7 +311,7 @@ export default function LessonScreen() {
 
                 {/* BUTTONS */}
 
-                <View style={styles.actions}>
+                <View style={[styles.actions, index === 0 && styles.actionsCentered]}>
                   {index > 0 ? (
                     <PrimaryButton
                       title="Previous"
@@ -322,6 +322,7 @@ export default function LessonScreen() {
 
                   <Animated.View
                     style={[
+                      { width: '48%' },
                       index === lessons.length - 1 &&
                         highlightPractice &&
                         styles.highlightedButton,
@@ -348,7 +349,7 @@ export default function LessonScreen() {
                           setCurrentIndex((i) => i + 1);
                         }
                       }}
-                      style={styles.primaryBtn}
+                      style={styles.fullWidthBtn}
                     />
                   </Animated.View>
                 </View>
@@ -562,12 +563,20 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
+  actionsCentered: {
+    justifyContent: "center",
+  },
+
   secondaryBtn: {
-    flex: 1,
+    width: '48%',
   },
 
   primaryBtn: {
-    flex: 2,
+    width: '48%',
+  },
+
+  fullWidthBtn: {
+    width: '100%',
   },
 
   highlightedButton: {

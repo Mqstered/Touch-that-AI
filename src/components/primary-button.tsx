@@ -9,20 +9,21 @@ type Props = {
 
 export function PrimaryButton({ title, onPress, style }: Props) {
   const isPrevious = title === "Previous";
+  const isCancel = title === "Cancel";
 
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.button,
-        isPrevious ? styles.previousButton : styles.nextButton,
+        isPrevious ? styles.previousButton : isCancel ? styles.cancelButton : styles.nextButton,
         style,
       ]}
     >
       <Text
         style={[
           styles.text,
-          isPrevious ? styles.previousText : styles.nextText,
+          isPrevious ? styles.previousText : isCancel ? styles.cancelText : styles.nextText,
         ]}
       >
         {title}
@@ -91,6 +92,22 @@ const styles = StyleSheet.create({
   },
 
   //------------------------------------------------
+  // CANCEL BUTTON
+  //------------------------------------------------
+
+  cancelButton: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#a855f7",
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+
+  cancelText: {
+    color: "#9333ea",
+  },
+
+  //------------------------------------------------
   // TEXT
   //------------------------------------------------
 
@@ -98,5 +115,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     letterSpacing: 0.3,
+    textAlign: "center",
   },
 });

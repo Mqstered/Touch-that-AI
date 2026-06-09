@@ -8,15 +8,15 @@ type Props = {
 export function BackButton({ onPress }: Props) {
   return (
     <Pressable onPress={onPress} style={styles.button}>
-      <Text style={styles.arrow}>←</Text>
+      <Text style={styles.text}>Back</Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    width: 54,
-    height: 54,
+    height: 42,
+    paddingHorizontal: 16,
 
     borderRadius: 18,
 
@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
 
-  arrow: {
-    fontSize: 28,
+  text: {
+    fontSize: 14,
     color: "#7e22ce",
-    fontWeight: "900",
+    fontWeight: "800",
   },
 });

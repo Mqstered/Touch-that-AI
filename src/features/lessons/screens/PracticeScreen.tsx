@@ -311,9 +311,14 @@ const styles = StyleSheet.create({
   },
   cancelBtn: {
     flex: 1,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: PurpleTheme.textSecondary,
+    shadowOpacity: 0,
+    elevation: 0,
   },
   submitBtn: {
-    flex: 2,
+    flex: 1,
   },
   scoringRow: {
     flexDirection: 'row',
